@@ -1,5 +1,4 @@
 {
-  "$schema": "https://json.schemastore.org/claude-code-plugin.json",
   "name": "postman",
   "displayName": "Postman",
   "version": "1.0.0",
@@ -11,5 +10,6 @@
   "homepage": "https://www.postmanlabs.com/skills/",
   "repository": "https://github.com/postmanlabs/postman-plugin",
   "license": "Apache-2.0",
-  "keywords": ["postman", "api", "mocking", "monitoring", "ci", "documentation"]
+  "keywords": ["postman", "api", "mocking", "monitoring", "ci", "documentation"],
+  "skills": "skills"
 }

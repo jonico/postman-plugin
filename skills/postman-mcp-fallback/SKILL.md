@@ -1,6 +1,6 @@
 ---
 name: postman-mcp-fallback
-description: Routes Postman work through Postman's own MCP server instead of the CLI, and only as a fallback. Do not use unless the bootstrap skill has already run and exhausted its CLI resolution ladder — a `postman` binary missing from PATH is not a qualifying reason, because bootstrap installs the CLI itself. Use when there is no shell or no Node, or when an agent must call Postman's API directly as MCP tools; also use once connected, for choosing a toolset and for judging MCP results such as a `getCollection` response or a `createMock` default.
+description: Falls back to Postman's own MCP server when the CLI cannot be used, and is the reference for using that surface once connected. Use when the user explicitly asks to connect an agent to Postman's MCP tools, to pick a toolset, or to judge an MCP result such as a `getCollection` response or a `createMock` default. For agent-initiated routing it is gated — only after bootstrap has exhausted its CLI resolution ladder, and a `postman` binary missing from PATH is never a qualifying reason, because bootstrap installs the CLI itself. Covers Postman's API as MCP tools, not the repo-local CLI workflow the other skills drive.
 ---
 
 # Fall Back to Postman's MCP Server

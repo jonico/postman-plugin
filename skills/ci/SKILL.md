@@ -1,6 +1,6 @@
 ---
 name: ci
-description: Writes pipeline configuration that runs `postman collection run` and `postman spec lint` as two independently failing checks on every pull request and branch update. Use when the user asks to "add Postman to CI", "run the collection on every PR", "fail the build if the API contract breaks", or "enforce governance rules in the pipeline". Configures the pipeline rather than performing a one-off local run, and is distinct from the monitoring skill's scheduled check against an already-deployed environment. Requires bootstrap.
+description: Writes pipeline configuration that runs `postman collection run` and `postman spec lint` as two independently failing checks on every pull request and branch update. Use when the user asks to "add Postman to CI", "run the collection on every PR", "fail the build if the API contract breaks", or "enforce governance rules in the pipeline". Configures the pipeline; for a single local run or lint outside a pipeline, invoke the CLI command directly instead of using this skill. Distinct from the monitoring skill's scheduled check against an already-deployed environment. Requires bootstrap.
 ---
 
 # Run Postman Checks in CI

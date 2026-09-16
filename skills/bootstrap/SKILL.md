@@ -1,6 +1,6 @@
 ---
 name: bootstrap
-description: Resolves the Postman CLI, authenticates, links the workspace, and records this repo's spec path, collections directory and workspace id. Use before any other Postman skill in this plugin, and when the user asks to "set up Postman here", "connect this repo to Postman", "link this workspace", or "run postman init". The mocking, ci, monitoring and api-documentation skills stop and point back here if it has not completed — they never re-derive these values themselves.
+description: Resolves the Postman CLI, authenticates, links the workspace, and records this repo's spec path, collections directory and workspace id. Use when the user asks to "set up Postman here", "connect this repo to Postman", "link this workspace", or "run postman init" — and before the mocking, ci, monitoring or api-documentation skills only when the CLI, the linked workspace or the spec path has not already been confirmed in this session. Those skills stop and point back here if it has not completed; they never re-derive these values themselves.
 ---
 
 # Bootstrap Postman for This Repo

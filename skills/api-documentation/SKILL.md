@@ -1,6 +1,7 @@
 ---
 name: api-documentation
-description: This skill should be used when the user asks to "publish API docs", "generate documentation for this API", "put this on the API Network", or "share a docs link for this collection or spec". Wraps Postman's auto-generated API documentation, built from an OpenAPI 3.0 definition or a collection — distinct from Documents (freeform collaborative notes) and Spec Hub (the design/authoring surface).
+description: Publishes Postman's auto-generated API documentation, rendered from an OpenAPI 3.0 definition or a collection rather than hand-written. Use when the user asks to "publish API docs", "generate documentation for this API", "put this on the API Network", or "share a docs link for this collection or spec". Distinct from Documents (freeform collaborative notes) and Spec Hub (the design and authoring surface). Requires bootstrap.
+disable-model-invocation: true
 ---
 
 # Publish API Documentation
@@ -34,3 +35,5 @@ Spec Hub (where the spec itself is authored); don't conflate them. Requires
 - The published content traces back to the spec/collection, not to prose
   written specifically for the doc page.
 - External publish only happened after explicit consent was given.
+- The published URL was returned and confirmed to resolve. A successful
+  publish call is not the same as a reachable page.

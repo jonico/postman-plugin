@@ -1,6 +1,6 @@
 ---
 name: mocking
-description: This skill should be used when the user asks to "mock this API", "stand up a mock server", "let the frontend build against this before it's implemented", or needs a consumer to develop against a contract before the real implementation exists. Wraps Postman Mock Servers via `postman mock generate` (build the config) and `postman mock run` (start it locally).
+description: Stands up a Postman mock server generated from the repo's spec examples or a collection's saved responses, so a consumer can build against the contract before the implementation exists. Use when the user asks to "mock this API", "stand up a mock server", or "let the frontend build against this before it is implemented". Defaults to a local mock; a cloud mock is publicly reachable and spends mock-call quota. Requires bootstrap.
 ---
 
 # Mock the Contract, Not the Implementation

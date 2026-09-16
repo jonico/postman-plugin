@@ -1,6 +1,7 @@
 ---
 name: monitoring
-description: This skill should be used when the user asks to "monitor this API in production", "set up a scheduled check against the live endpoint", "alert us if the deployed API breaks", or "catch contract regressions between deploys". Covers Postman Monitors — a scheduled check against a deployed environment, distinct from the ci skill's per-push check against a freshly built one. `postman monitor run` only invokes an existing Monitor and reports the result; there is no CLI command that creates or schedules one.
+description: Runs and reports an existing Postman Monitor — a scheduled check against an already-deployed environment. Use when the user asks to "monitor this API in production", "set up a scheduled check against the live endpoint", "alert us if the deployed API breaks", or "catch contract regressions between deploys". Distinct from the ci skill's per-push check against a freshly built environment. `postman monitor run` only invokes a Monitor that already exists; no CLI command creates or schedules one. Requires bootstrap.
+disable-model-invocation: true
 ---
 
 # Monitor the Live Endpoint
@@ -15,19 +16,23 @@ and environment.
 
 ## Critical Rules
 
-1. **Reuse the existing collection and environment.** Never duplicate
+1. **The CLI cannot create or schedule a Monitor — it can only run one that
+   already exists.** The only monitor verb is `postman monitor run <monitorId>`
+   (`-t/--timeout`, default 15 min). If no Monitor exists yet, say so plainly,
+   then route onward instead of stopping: creation and scheduling happen in the
+   Postman app, or through Postman's API — which is reachable as MCP tools via
+   `postman-mcp-fallback` when that skill's own preconditions are met. Never
+   imply the CLI can create one.
+2. **Reuse the existing collection and environment.** Never duplicate
    requests or assertions into monitor-only config.
-2. **Never point a monitor at production without explicit consent.** A
+3. **Never point a monitor at production without explicit consent.** A
    Monitor runs on Postman's infrastructure on a recurring schedule and can
    alert real people — confirm the target environment and alert destination
-   with the user before creating one. Creation and scheduling happen in the
-   Postman app or API, not the CLI — the CLI's only monitor verb is
-   `postman monitor run <monitorId>` (`-t/--timeout`, default 15 min), which
-   invokes a Monitor that already exists and reports the result.
-3. **Don't invent an alert destination.** Email, Slack channel, webhook —
+   with the user first.
+4. **Don't invent an alert destination.** Email, Slack channel, webhook —
    whatever the user gives. If they haven't said, ask; don't default to
    nothing meaningful or guess an address.
-4. **State the frequency tradeoff instead of picking a number silently.**
+5. **State the frequency tradeoff instead of picking a number silently.**
    More frequent checks catch regressions faster and spend more monitor
    runs — say what's being chosen and why.
 

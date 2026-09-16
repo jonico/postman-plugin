@@ -35,6 +35,12 @@ and environment.
 5. **State the frequency tradeoff instead of picking a number silently.**
    More frequent checks catch regressions faster and spend more monitor
    runs — say what's being chosen and why.
+6. **Run `-h` before any `postman` command not spelled out above.**
+   `postman <resource> <action> -h` prints the real actions, flags and
+   defaults — copy the shape from its output. Never substitute a verb that
+   sounds right; a wrong one fails as if the feature were missing. Note that
+   `-h` confirming no create/schedule verb is exactly rule 1, not a stale
+   install.
 
 ## Verification
 

@@ -34,6 +34,10 @@ Spec Hub (where the spec itself is authored); don't conflate them. Requires
    or a public domain — either makes the docs reachable outside the team.
 3. **State which source rendered the docs when both a spec and a collection
    exist.** They can disagree; say which one the reader is looking at.
+4. **Run `-h` before any `postman` command not spelled out above.**
+   `postman <resource> <action> -h` prints the real actions, flags and
+   defaults — copy the shape from its output. Never substitute a verb that
+   sounds right; a wrong one fails as if the feature were missing.
 
 ## Verification
 

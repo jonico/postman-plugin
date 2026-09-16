@@ -1,6 +1,6 @@
 ---
 name: mocking
-description: Stands up a Postman mock server generated from the repo's spec examples or a collection's saved responses, so a consumer can build against the contract before the implementation exists. Use when the user asks to "mock this API", "stand up a mock server", or "let the frontend build against this before it is implemented". Defaults to a local mock; a cloud mock is publicly reachable and spends mock-call quota. Requires bootstrap.
+description: Stands up a Postman mock server generated from the repo's spec examples or a collection's saved responses, so a consumer can build against the contract before the implementation exists. Use when the user asks to "mock this API", "stand up a mock server", or "let the frontend build against this before it is implemented". Defaults to a local mock; a cloud mock spends mock-call quota, and a cloud mock server's URL stays private behind an x-api-key header unless --public is passed. Requires bootstrap.
 ---
 
 # Mock the Contract, Not the Implementation
@@ -47,6 +47,10 @@ happened.
    the source spec/collection file at generation time. Before reusing a
    mock, recompute the hash and compare; a mismatch means it's stale, and
    that has to be said before handing the mock to anyone.
+4. **Run `-h` before any `postman` command not spelled out above.**
+   `postman <resource> <action> -h` prints the real actions, flags and
+   defaults — copy the shape from its output. Never substitute a verb that
+   sounds right; a wrong one fails as if the feature were missing.
 
 ## Verification
 

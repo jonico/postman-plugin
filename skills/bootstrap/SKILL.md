@@ -27,20 +27,18 @@ postman <resource> <action> -h  # the real flags, defaults and examples — e.g.
 ```
 
 Read the third level before writing any command that carries a flag. It is
-the only place the **defaults** are stated, and the defaults are what go
-wrong silently rather than loudly: `postman mock deploy` is private unless
-`--public`, `postman spec lint` fails at `ERROR` and above, `postman monitor
-run` times out after 15 minutes. Most `<action> -h` screens end with worked
-`Eg.` lines — copy the shape from there instead of composing one.
+the only place the **defaults** are stated, and a wrong default fails
+silently rather than loudly. Many `<action> -h` screens end with worked `Eg.`
+lines — copy the shape from there rather than composing one.
 
-This replaces guessing, and it also replaces asking the user. Two cases where
-it is the whole answer:
+This replaces guessing, and it often replaces asking the user. Two cases
+where it is the whole answer:
 
 - There's no single verb for "confirm the workspace is linked and synced."
-  `postman workspace -h` lists the six that exist — `create`, `connect-git`,
-  `pull`, `push`, `prepare`, `lint` — each a different direction (new
-  workspace, bind an existing one, cloud→local, local→cloud, validate before
-  push, validate in place). Pick from that list; don't infer one.
+  Run `postman workspace -h` and pick from what it prints. On v1.56.3 that is
+  `list` (which workspaces exist — start here when the id is unknown),
+  `create`, `connect-git`, `pull`, `push`, `prepare`, `lint`, each a different
+  direction. The live output is authoritative, not this list.
 - A capability the user names may not map to the verb it sounds like. Check
   before reporting it missing, and check before inventing it.
 
@@ -78,13 +76,10 @@ curl, PowerShell).
 
 Rungs 1 and 2 establish that *something runs*, not that something *current*
 runs — `--version` is a liveness probe there, so a binary installed months ago
-wins the ladder indefinitely and rung 3 never fires again. Compare it once per
-session, before real work:
-
-```bash
-postman --version              # the resolved copy
-npm view postman-cli version   # latest published
-```
+wins the ladder indefinitely and rung 3 never fires again. Compare
+`postman --version` against `npm view postman-cli version` once per session,
+before real work — see
+[reference/cli_installation.md](reference/cli_installation.md).
 
 What to do about a mismatch depends on who owns that copy:
 
@@ -98,15 +93,11 @@ What to do about a mismatch depends on who owns that copy:
   Update it with *the same command that installed it* — see
   [reference/cli_installation.md](reference/cli_installation.md).
 
-Drift is not cosmetic here, because subcommands appear and disappear across
-versions: `postman api lint` works against API Builder objects on v11 and not
-on v12+ (rule 7), and newer surface like `postman spec ai-readiness` is simply
-absent from an older install.
-
-**There is no self-update verb, and one command looks like it.** `postman
-skills update` refreshes the repo's committed `postman/skills/`, *not* the
-binary — its own help points elsewhere for the plugin's copy (`claude plugin
-update postman`). Don't reach for it expecting a CLI upgrade.
+Drift is not cosmetic: newer surface is simply absent from an older install —
+`postman spec ai-readiness`, for one. Keep this separate from the API Builder
+deprecation in Critical Rule 7: that one turns on the Postman platform
+generation (v11 vs v12), not the CLI version, so upgrading the CLI does not
+change it.
 
 ## Critical Rules
 
@@ -144,16 +135,15 @@ update postman`). Don't reach for it expecting a CLI upgrade.
    postman mock generate -h   # …then the command it actually documents
    ```
 
-   That wrong line is not hypothetical: an agent ran it, got an error, and
-   only then ran `postman api -h`. One `-h` first would have replaced the
-   whole detour. If `-h` doesn't list what you need, don't substitute a verb
-   that sounds right.
+   If `-h` doesn't list what you need, don't substitute a verb that sounds
+   right.
 
-   **One check before you report a feature missing: is this copy current?**
-   `-h` describes the binary in hand, not the product. On a stale install a
-   subcommand that exists upstream is simply absent, so "the CLI doesn't do
-   it" is the wrong conclusion — "your CLI is out of date" is the right one.
-   Compare the versions first, then answer.
+   **Before reporting a feature missing, check the version once.** `-h`
+   describes the binary in hand. If the resolved copy is behind the latest
+   published, say so and offer to refresh — then re-read `-h`. If it is
+   current, `-h` is the answer: the CLI does not do it. Never assert the CLI
+   is out of date without having compared the two version strings, and never
+   make a refresh a precondition for answering the question that was asked.
 7. **Specs belong to Spec Hub. The API Builder is deprecated — never route new
    work to `postman api`.** Postman's docs are explicit: the API Builder *"is
    no longer supported in Postman v12 and later"* and *"Spec Hub has replaced
@@ -174,9 +164,10 @@ non-empty and stated back to the user. "The CLI is installed" is not the bar —
 those three resolved values are. Never report that Postman is "set up" because
 a skill loaded; loading a skill configures nothing.
 
-State the resolved version alongside those three values, and say whether it
-matched `npm view postman-cli version`. Reporting it as current without having
-compared is the failure this section exists to catch.
+State the resolved version alongside those three values, plus either the
+latest published version or the fact that the check could not run (no network
+is a normal answer, and does not block bootstrap). Never call the CLI current
+without having compared.
 
 ## Reference
 

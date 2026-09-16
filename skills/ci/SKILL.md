@@ -13,7 +13,7 @@ and `postman spec lint <spec> --workspace-id <id> -f error` for API
 Governance rules (governance rulesets come from `--workspace-id`;
 `-f/--fail-severity` sets the build-fail threshold). `spec lint` is the
 governance command for every new pipeline; the older `postman api lint` is
-deprecated and covered by Critical Rule 8.
+deprecated — see the `spec lint` rule below.
 These check two different things and must stay two independent steps with
 two independent fail states — collapsing them hides which one actually
 broke. Requires `bootstrap` to have resolved CLI auth and the
@@ -79,6 +79,10 @@ collection/spec path.
    (`api lint` takes `--integration-id` and `-x`; `spec lint` takes
    `--workspace-id` and `-o`, and spells the middle severity `warning` where
    `api lint` spells it `warn`).
+9. **Run `-h` before any `postman` command not spelled out above.**
+   `postman <resource> <action> -h` prints the real actions, flags and
+   defaults — copy the shape from its output. Never substitute a verb that
+   sounds right; a wrong one fails as if the feature were missing.
 
 ## Verification
 

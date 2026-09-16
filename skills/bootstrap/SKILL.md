@@ -46,6 +46,10 @@ absolute path you settled on so later sessions skip straight to rung 1.
 5. If rung 4 also fails, the CLI is genuinely unavailable. Say which rung
    failed and why before considering `postman-mcp-fallback`.
 
+See [reference/cli_installation.md](reference/cli_installation.md) for the
+per-platform install/update/uninstall commands behind rungs 2-4 (npm,
+curl, PowerShell).
+
 ## Critical Rules
 
 1. **A missing `postman` binary is never a reason to switch to the MCP
@@ -75,3 +79,10 @@ Bootstrap is done only when the resolved invocation has answered a real
 non-empty and stated back to the user. "The CLI is installed" is not the bar —
 those three resolved values are. Never report that Postman is "set up" because
 a skill loaded; loading a skill configures nothing.
+
+## Reference
+
+- [Collection Schema v3](reference/collection_schema_v3.md) — the schema for
+  the collection files this skill resolves the directory for.
+- [CLI Installation](reference/cli_installation.md) — install/update/
+  uninstall commands per platform.

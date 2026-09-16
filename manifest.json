@@ -4,78 +4,78 @@
     {
       "name": "api-documentation",
       "plugin": "postman",
-      "description": "This skill should be used when the user asks to \"publish API docs\", \"generate documentation for this API\", \"put this on the API Network\", or \"share a docs link for this collection or spec\". Wraps Postman's auto-generated API documentation, built from an OpenAPI 3.0 definition or a collection — distinct from Documents (freeform collaborative notes) and Spec Hub (the design/authoring surface).",
+      "description": "Publishes Postman's auto-generated API documentation, rendered from an OpenAPI 3.0 definition or a collection rather than hand-written. Use when the user asks to \"publish API docs\", \"generate documentation for this API\", \"put this on the API Network\", or \"share a docs link for this collection or spec\". Distinct from Documents (freeform collaborative notes) and Spec Hub (the design and authoring surface). Requires bootstrap.",
       "files": [
         {
           "target": "SKILL.md",
           "source": "skills/api-documentation/SKILL.md",
-          "bytes": 2001,
-          "sha256": "203981ab677e124f3937cac90db2044003fa4ea0bd09f1c2b204e8c2c4f4b28f"
+          "bytes": 2187,
+          "sha256": "4f7ede273daf6be6f1e31039e250f0e919c5a9894fcc0a672310a6ac83cea630"
         }
       ]
     },
     {
       "name": "bootstrap",
       "plugin": "postman",
-      "description": "This skill should be used before running the mocking, ci, monitoring, or api-documentation skills in this plugin, whenever a repository has no confirmed Postman CLI login, linked workspace, or resolved spec/collection path yet. Also use when the user asks to \"set up Postman here\", \"connect this repo to Postman\", \"link this workspace\", or \"run postman init\". It is a hard prerequisite — the other four skills stop and point back here if it hasn't completed.",
+      "description": "Resolves the Postman CLI, authenticates, links the workspace, and records this repo's spec path, collections directory and workspace id. Use when the user asks to \"set up Postman here\", \"connect this repo to Postman\", \"link this workspace\", or \"run postman init\" — and before the mocking, ci, monitoring or api-documentation skills only when the CLI, the linked workspace or the spec path has not already been confirmed in this session. Those skills stop and point back here if it has not completed; they never re-derive these values themselves.",
       "files": [
         {
           "target": "SKILL.md",
           "source": "skills/bootstrap/SKILL.md",
-          "bytes": 2263,
-          "sha256": "773a7481c5a7ce4ae7a4b2443eed2db1199428256cee39173f3ddc3fb1197c02"
+          "bytes": 4332,
+          "sha256": "b9bd24d0faef2cc87a463dccfdbfe2ea47cabb910b55cdbf4134af3efe6133ae"
         }
       ]
     },
     {
       "name": "ci",
       "plugin": "postman",
-      "description": "This skill should be used when the user asks to \"add Postman to CI\", \"run the collection on every PR\", \"fail the build if the API contract breaks\", or \"enforce governance rules in the pipeline\". Wraps `postman collection run` and `postman spec lint` as two independent pipeline checks, triggered on push/PR against a freshly built environment.",
+      "description": "Writes pipeline configuration that runs `postman collection run` and `postman spec lint` as two independently failing checks on every pull request and branch update. Use when the user asks to \"add Postman to CI\", \"run the collection on every PR\", \"fail the build if the API contract breaks\", or \"enforce governance rules in the pipeline\". Configures the pipeline; for a single local run or lint outside a pipeline, invoke the CLI command directly instead of using this skill. Distinct from the monitoring skill's scheduled check against an already-deployed environment. Requires bootstrap.",
       "files": [
         {
           "target": "SKILL.md",
           "source": "skills/ci/SKILL.md",
-          "bytes": 2807,
-          "sha256": "828f45ea934f99e6ba33628052fc110d84330776ec5d1bd7bfd09fc82f6d64d5"
+          "bytes": 3472,
+          "sha256": "3928e86ddc6a0c467c1ce07af2b99a50aa3cd44ca63d6d18f99bfaf71293afc6"
         }
       ]
     },
     {
       "name": "mocking",
       "plugin": "postman",
-      "description": "This skill should be used when the user asks to \"mock this API\", \"stand up a mock server\", \"let the frontend build against this before it's implemented\", or needs a consumer to develop against a contract before the real implementation exists. Wraps Postman Mock Servers via `postman mock generate` (build the config) and `postman mock run` (start it locally).",
+      "description": "Stands up a Postman mock server generated from the repo's spec examples or a collection's saved responses, so a consumer can build against the contract before the implementation exists. Use when the user asks to \"mock this API\", \"stand up a mock server\", or \"let the frontend build against this before it is implemented\". Defaults to a local mock; a cloud mock is publicly reachable and spends mock-call quota. Requires bootstrap.",
       "files": [
         {
           "target": "SKILL.md",
           "source": "skills/mocking/SKILL.md",
-          "bytes": 2299,
-          "sha256": "86e9469170ecb71e24cb9385b8a74107a222565cfd8aa9315ab83f29bc6d070d"
+          "bytes": 2370,
+          "sha256": "06e84848c228b35dffd8d7d5ecff93b987126e17bc79c9bee560dc73e40f6eaa"
         }
       ]
     },
     {
       "name": "monitoring",
       "plugin": "postman",
-      "description": "This skill should be used when the user asks to \"monitor this API in production\", \"set up a scheduled check against the live endpoint\", \"alert us if the deployed API breaks\", or \"catch contract regressions between deploys\". Covers Postman Monitors — a scheduled check against a deployed environment, distinct from the ci skill's per-push check against a freshly built one. `postman monitor run` only invokes an existing Monitor and reports the result; there is no CLI command that creates or schedules one.",
+      "description": "Runs and reports an existing Postman Monitor — a scheduled check against an already-deployed environment. Use when the user asks to \"monitor this API in production\", \"set up a scheduled check against the live endpoint\", \"alert us if the deployed API breaks\", or \"catch contract regressions between deploys\". Distinct from the ci skill's per-push check against a freshly built environment. `postman monitor run` only invokes a Monitor that already exists; no CLI command creates or schedules one. Requires bootstrap.",
       "files": [
         {
           "target": "SKILL.md",
           "source": "skills/monitoring/SKILL.md",
-          "bytes": 2145,
-          "sha256": "bbbb1e3ec79fb8583877044b7260e6c7275dd6258f6c2a53f1bce44a2c2c6270"
+          "bytes": 2429,
+          "sha256": "735f7c9eaf064af6462c1f6e4a7e16923043c346b59a6ba5c0479b66612cbb36"
         }
       ]
     },
     {
-      "name": "postman-mcp-server",
+      "name": "postman-mcp-fallback",
       "plugin": "postman",
-      "description": "This skill should be used when the user asks to \"connect Claude to Postman\", \"set up the Postman MCP server\", \"add Postman's MCP tools to Claude Code / Cursor / VS Code\", \"which Postman MCP toolset should I use\", or wants an agent to call Postman's own API directly as MCP tools instead of the Postman CLI. Also use once `@postman/postman-mcp-server` is already connected — before deciding local vs. remote, before answering \"is there an API for X\", before trusting a `getCollection` result, or before creating a mock server through it. Distinct from the rest of this plugin, which wraps the Postman CLI inside a repo's local workflow — this skill governs Postman's own MCP server as a direct tool-calling surface.",
+      "description": "Falls back to Postman's own MCP server when the CLI cannot be used, and is the reference for using that surface once connected. Use when the user explicitly asks to connect an agent to Postman's MCP tools, to pick a toolset, or to judge an MCP result such as a `getCollection` response or a `createMock` default. For agent-initiated routing it is gated — only after bootstrap has exhausted its CLI resolution ladder, and a `postman` binary missing from PATH is never a qualifying reason, because bootstrap installs the CLI itself. Covers Postman's API as MCP tools, not the repo-local CLI workflow the other skills drive.",
       "files": [
         {
           "target": "SKILL.md",
-          "source": "skills/postman-mcp-server/SKILL.md",
-          "bytes": 6520,
-          "sha256": "dbfad05c83447700341999594369cb00ab7c77c008d8ea06d3c8ff4130c6782e"
+          "source": "skills/postman-mcp-fallback/SKILL.md",
+          "bytes": 6861,
+          "sha256": "c1ba7a9b0cddadd5778e38817e4669eda03617224a5d43e74427f0de5cc8bbd8"
         }
       ]
     }

@@ -9,8 +9,8 @@
         {
           "target": "SKILL.md",
           "source": "skills/api-documentation/SKILL.md",
-          "bytes": 2187,
-          "sha256": "4f7ede273daf6be6f1e31039e250f0e919c5a9894fcc0a672310a6ac83cea630"
+          "bytes": 2530,
+          "sha256": "1518ba3aed6a909b88cf3b2a21fd6013e3596232b0f6f4a684007147806b52a2"
         }
       ]
     },
@@ -22,8 +22,8 @@
         {
           "target": "SKILL.md",
           "source": "skills/bootstrap/SKILL.md",
-          "bytes": 4760,
-          "sha256": "8dae32c3fd8ded0468b6dde605ed674fb8641a86528c5c57b46db34fe5d46418"
+          "bytes": 7519,
+          "sha256": "7c6ecbf38c458f6c8c314ca70334825657bf69e9422934ef03a7b57206a14747"
         },
         {
           "target": "reference/cli_installation.md",
@@ -47,8 +47,8 @@
         {
           "target": "SKILL.md",
           "source": "skills/ci/SKILL.md",
-          "bytes": 3472,
-          "sha256": "3928e86ddc6a0c467c1ce07af2b99a50aa3cd44ca63d6d18f99bfaf71293afc6"
+          "bytes": 4592,
+          "sha256": "c719f99fc0713e829b52a75948bddd5326755f7e65d96021b99980cd7b968092"
         }
       ]
     },
@@ -60,8 +60,8 @@
         {
           "target": "SKILL.md",
           "source": "skills/mocking/SKILL.md",
-          "bytes": 2370,
-          "sha256": "06e84848c228b35dffd8d7d5ecff93b987126e17bc79c9bee560dc73e40f6eaa"
+          "bytes": 2972,
+          "sha256": "ee63f357035a2d86c50cdfa8c650abc3e920ddab7995db9916c4db97a5521b54"
         }
       ]
     },

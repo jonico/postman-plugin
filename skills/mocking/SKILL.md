@@ -30,9 +30,19 @@ happened.
    postman mock generate collections/orders.json
    ```
 2. **Default to local.** `postman mock generate` (no `--workspace`) followed
-   by `postman mock run` costs nothing extra and stays private. A cloud
-   mock (`mock generate --workspace <id>`, or `mock deploy --public`) gets a
-   public URL and spends mock-call quota — get explicit consent first.
+   by `postman mock run` costs nothing extra and stays on the machine. Going
+   to the cloud is two separate decisions, and only the second one is about
+   reachability — don't collapse them:
+   - `mock generate --workspace <id>` creates a **cloud** mock: it leaves the
+     repo and spends mock-call quota. Get explicit consent.
+   - `mock deploy <mockId>` then puts it behind a URL, and per `mock deploy
+     -h` that URL is **private by default** — it requires an `x-api-key`
+     header. `--public` is what removes the key, so `--public` is the flag
+     that needs its own consent, not `deploy` itself.
+
+   `-y/--yes` accepts the safe defaults (private, no auto-deploy); reach for
+   it rather than answering the prompts blind. Re-read `postman mock deploy
+   -h` before choosing, instead of trusting this summary.
 3. **Check staleness before trusting an existing mock.** Record a hash of
    the source spec/collection file at generation time. Before reusing a
    mock, recompute the hash and compare; a mismatch means it's stale, and

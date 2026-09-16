@@ -20,10 +20,15 @@ Spec Hub (where the spec itself is authored); don't conflate them. Requires
    parallel.** A field with no description is a gap to fix at the source,
    not in a doc written around it — a hand-maintained page drifts from the
    contract that actually ships; generation is what keeps them equal.
-   Publish the source and Postman renders the docs from it automatically —
-   `postman workspace push` for a git-native spec/collection, or `postman
-   api publish <apiId>` for a Postman API Builder-bound API (US region
-   only). There is no CLI command literally named "generate docs."
+   Publish the source and Postman renders the docs from it automatically:
+   `postman workspace push` for a git-native spec/collection. There is no CLI
+   command literally named "generate docs" — confirm the verb with `postman
+   workspace -h` rather than guessing one.
+   `postman api publish <apiId>` is **not** the second option it looks like:
+   it publishes an API Builder object, which Postman's docs call *"deprecated
+   and no longer supported"* and *"no longer supported in Postman v12 and
+   later"*, and it is US-region-only. Use it only against an API that already
+   lives there, and say it should move to Spec Hub.
 2. **Publishing externally requires explicit consent; regenerating a
    local/private preview does not.** External means the Postman API Network
    or a public domain — either makes the docs reachable outside the team.

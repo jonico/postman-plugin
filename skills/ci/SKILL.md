@@ -11,9 +11,9 @@ Wire the same checks a human runs locally into the pipeline, each as its own
 step: `postman collection run <collection>` for functional/contract tests,
 and `postman spec lint <spec> --workspace-id <id> -f error` for API
 Governance rules (governance rulesets come from `--workspace-id`;
-`-f/--fail-severity` sets the build-fail threshold). A Postman API
-Builder-bound API, rather than a git-native spec, uses `postman api lint`
-instead — a different, older entity model, not this plugin's default.
+`-f/--fail-severity` sets the build-fail threshold). `spec lint` is the
+governance command for every new pipeline; the older `postman api lint` is
+deprecated and covered by Critical Rule 8.
 These check two different things and must stay two independent steps with
 two independent fail states — collapsing them hides which one actually
 broke. Requires `bootstrap` to have resolved CLI auth and the
@@ -59,9 +59,31 @@ collection/spec path.
    once the CLI reports them; this skill's job ends at running the two
    commands and failing the build correctly, not at touching Catalog
    directly.
+8. **Lint with `spec lint`. Never add `postman api lint` to a new pipeline.**
+   It targets a Postman API Builder object — a model Postman's docs describe
+   as *"deprecated and no longer supported"*, *"not supported in Postman v12
+   and later"*, and replaced by Spec Hub. It is also US-region-only, which a
+   multi-region pipeline discovers at run time rather than review time.
+
+   ```yaml
+   # WRONG — deprecated entity model; breaks on v12 and outside the US region
+   - run: postman api lint $API_ID -f error
+
+   # CORRECT — the governance check for a specification
+   - run: postman spec lint spec.yaml --workspace-id $WS -f error
+   ```
+
+   Only touch `api lint` to keep an existing v11 pipeline alive, and say it
+   needs migrating to Spec Hub when you do. Confirm the flags with `postman
+   spec lint -h` rather than copying them across — the two commands differ
+   (`api lint` takes `--integration-id` and `-x`; `spec lint` takes
+   `--workspace-id` and `-o`, and spells the middle severity `warning` where
+   `api lint` spells it `warn`).
 
 ## Verification
 
 - Two visibly separate steps in the pipeline config, each independently
   able to fail the build.
 - No secret value appears literally in the committed workflow file.
+- The governance step invokes `spec lint`; no new pipeline introduces
+  `api lint`.

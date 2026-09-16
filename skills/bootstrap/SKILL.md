@@ -74,6 +74,40 @@ See [reference/cli_installation.md](reference/cli_installation.md) for the
 per-platform install/update/uninstall commands behind rungs 2-4 (npm,
 curl, PowerShell).
 
+### Is the resolved copy current?
+
+Rungs 1 and 2 establish that *something runs*, not that something *current*
+runs — `--version` is a liveness probe there, so a binary installed months ago
+wins the ladder indefinitely and rung 3 never fires again. Compare it once per
+session, before real work:
+
+```bash
+postman --version              # the resolved copy
+npm view postman-cli version   # latest published
+```
+
+What to do about a mismatch depends on who owns that copy:
+
+- **Rungs 1 and 3 — the plugin's own copy**, under `$CLAUDE_PLUGIN_DATA`. Ours
+  to maintain: re-run rung 3's `npm install --prefix …` to refresh it, then say
+  you did and which version replaced which.
+- **Rung 2 — a global install the user owns.** Report the drift, name both
+  versions, and let them decide. **Never `npm install -g` over it**: it may
+  have come from the curl installer or a system package manager, and upgrading
+  it with the wrong tool leaves two `postman` binaries and a `PATH` question.
+  Update it with *the same command that installed it* — see
+  [reference/cli_installation.md](reference/cli_installation.md).
+
+Drift is not cosmetic here, because subcommands appear and disappear across
+versions: `postman api lint` works against API Builder objects on v11 and not
+on v12+ (rule 7), and newer surface like `postman spec ai-readiness` is simply
+absent from an older install.
+
+**There is no self-update verb, and one command looks like it.** `postman
+skills update` refreshes the repo's committed `postman/skills/`, *not* the
+binary — its own help points elsewhere for the plugin's copy (`claude plugin
+update postman`). Don't reach for it expecting a CLI upgrade.
+
 ## Critical Rules
 
 1. **A missing `postman` binary is never a reason to switch to the MCP
@@ -88,10 +122,13 @@ curl, PowerShell).
 3. **Never fabricate a workspace id, spec path, or collections directory.**
    If the CLI can't resolve one, report the gap and stop. A guessed value
    here corrupts every skill that trusts it downstream.
-4. **Check existing state before setting anything up.** Detect what's already
-   true — CLI installed? already logged in? workspace already linked? — and
-   skip finished steps. Don't assume a blank slate, and don't assume nothing
-   needs to happen just because the CLI is present.
+4. **Check existing state before setting anything up — and remember that
+   "present" is not "current".** Detect what's already true — CLI installed?
+   *at which version?* already logged in? workspace already linked? — and skip
+   finished steps. Don't assume a blank slate, and don't assume nothing needs
+   to happen just because the CLI is present. An installed-but-stale CLI is
+   the case the ladder is blindest to, because it satisfies every rung it
+   reaches; see [Is the resolved copy current?](#is-the-resolved-copy-current).
 5. **Wire up an existing repo only. Never scaffold a new API.** If there's no
    spec or collection yet, that's a design decision for the user to make.
    Report the gap; do not generate a starter spec to fill it.
@@ -109,8 +146,14 @@ curl, PowerShell).
 
    That wrong line is not hypothetical: an agent ran it, got an error, and
    only then ran `postman api -h`. One `-h` first would have replaced the
-   whole detour. If `-h` doesn't list what you need, say the CLI doesn't do
-   it — don't substitute a verb that sounds right.
+   whole detour. If `-h` doesn't list what you need, don't substitute a verb
+   that sounds right.
+
+   **One check before you report a feature missing: is this copy current?**
+   `-h` describes the binary in hand, not the product. On a stale install a
+   subcommand that exists upstream is simply absent, so "the CLI doesn't do
+   it" is the wrong conclusion — "your CLI is out of date" is the right one.
+   Compare the versions first, then answer.
 7. **Specs belong to Spec Hub. The API Builder is deprecated — never route new
    work to `postman api`.** Postman's docs are explicit: the API Builder *"is
    no longer supported in Postman v12 and later"* and *"Spec Hub has replaced
@@ -130,6 +173,10 @@ Bootstrap is done only when the resolved invocation has answered a real
 non-empty and stated back to the user. "The CLI is installed" is not the bar —
 those three resolved values are. Never report that Postman is "set up" because
 a skill loaded; loading a skill configures nothing.
+
+State the resolved version alongside those three values, and say whether it
+matched `npm view postman-cli version`. Reporting it as current without having
+compared is the failure this section exists to catch.
 
 ## Reference
 

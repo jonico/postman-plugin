@@ -1,9 +1,9 @@
 ---
-name: postman-mcp-server
-description: This skill should be used when the user asks to "connect Claude to Postman", "set up the Postman MCP server", "add Postman's MCP tools to Claude Code / Cursor / VS Code", "which Postman MCP toolset should I use", or wants an agent to call Postman's own API directly as MCP tools instead of the Postman CLI. Also use once `@postman/postman-mcp-server` is already connected — before deciding local vs. remote, before answering "is there an API for X", before trusting a `getCollection` result, or before creating a mock server through it. Distinct from the rest of this plugin, which wraps the Postman CLI inside a repo's local workflow — this skill governs Postman's own MCP server as a direct tool-calling surface.
+name: postman-mcp-fallback
+description: Routes Postman work through Postman's own MCP server instead of the CLI, and only as a fallback. Do not use unless the bootstrap skill has already run and exhausted its CLI resolution ladder — a `postman` binary missing from PATH is not a qualifying reason, because bootstrap installs the CLI itself. Use when there is no shell or no Node, or when an agent must call Postman's API directly as MCP tools; also use once connected, for choosing a toolset and for judging MCP results such as a `getCollection` response or a `createMock` default.
 ---
 
-# Call Postman Directly Through Its MCP Server
+# Fall Back to Postman's MCP Server
 
 ## Overview
 
@@ -44,30 +44,36 @@ Transport is chosen the same way, at connection time, not per call:
 
 ## Critical Rules
 
-1. **Default to `minimal`; only step up when the task needs it.** See the
+1. **This surface is the fallback, not a peer. Confirm bootstrap exhausted the
+   CLI ladder before using it.** A missing `postman` on `PATH` is not a
+   qualifying reason — bootstrap installs the CLI into the plugin's own data
+   directory. Routing here to avoid an install defeats the point of the plugin.
+   Qualifying reasons are: no shell, no Node, or a hosted session where the
+   install genuinely cannot happen. Say which one applies.
+2. **Default to `minimal`; only step up when the task needs it.** See the
    table above — don't reach for `full` "to be safe."
-2. **Fetch the `postman://instructions` resource before answering anything
+3. **Fetch the `postman://instructions` resource before answering anything
    Postman-related — the server asks for this itself, but most MCP hosts
    won't do it automatically.** The server's own `instructions` metadata
    tells the connecting agent to read that resource first. If the host
    doesn't surface it on connect, read it explicitly before the first real
    tool call.
-3. **Never conclude "no such API exists" from the visible tool list alone.**
+4. **Never conclude "no such API exists" from the visible tool list alone.**
    The tool list is the fixed set of tools for *using* Postman, not a live
    index of every API the organization has published. Before answering
    whether an API exists, call `searchPostmanElements` (`ownership:
    "organization"` by default) — the server's own instructions name this
    exact anti-pattern.
-4. **A tool that looks missing may just be off in this toolset — check
+5. **A tool that looks missing may just be off in this toolset — check
    before telling the user to reconfigure.** Call `getEnabledTools`; its own
    description says to run it first when a requested tool is unavailable.
-5. **Every mock server this MCP server creates is public unless told
+6. **Every mock server this MCP server creates is public unless told
    otherwise.** `createMock`'s `private` parameter defaults to `false` —
    "public and can receive requests from anyone and anywhere." There is no
    local-mock option on this surface at all — that's the CLI, via the
    `mocking` skill. Get explicit consent, or pass `private: true`, before
    calling `createMock` or `publishMock`.
-6. **`getCollection` returns a lightweight map, not the full collection,
+7. **`getCollection` returns a lightweight map, not the full collection,
    unless asked.** The default response is metadata plus recursive item
    references. Pass `model: "full"` only when the task actually needs
    request bodies, scripts, or saved examples — the full payload of a large

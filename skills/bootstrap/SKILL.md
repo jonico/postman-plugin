@@ -25,9 +25,11 @@ one, cloud→local, local→cloud, validate before push, validate in place).
 Work down this ladder and stop at the first rung that answers. Record the
 absolute path you settled on so later sessions skip straight to rung 1.
 
-1. A previously recorded absolute path — verify it with `--version` and use it.
-2. `postman --version`. If a global install answers, record
-   `command -v postman` and use it.
+1. `$CLAUDE_PLUGIN_DATA/postman-bin`, if it exists and holds an absolute path —
+   verify it with `--version` and use it. This is the normal case after the
+   first session.
+2. `postman --version`. If a global install answers, record its path with
+   `command -v postman > "$CLAUDE_PLUGIN_DATA/postman-bin"` and use it.
 3. Install once into the plugin's own data directory, then record it:
 
    ```

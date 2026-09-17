@@ -35,7 +35,7 @@ This replaces guessing, and it often replaces asking the user. Two cases
 where it is the whole answer:
 
 - There's no single verb for "confirm the workspace is linked and synced."
-  Run `postman workspace -h` and pick from what it prints. On v1.56.3 that is
+  Run `postman workspace -h` and pick from what it prints. On v1.56.0 that is
   `list` (which workspaces exist — start here when the id is unknown),
   `create`, `connect-git`, `pull`, `push`, `prepare`, `lint`, each a different
   direction. The live output is authoritative, not this list.
@@ -59,8 +59,7 @@ is gone by the next, so assign it only to use it **within that same call**, as
 rungs 2 and 3 do.
 
 **Never substitute a host-provided plugin variable here — neither the bare
-`$CLAUDE_PLUGIN_DATA` nor its braced form.** Two measured reasons and one
-structural one:
+`$CLAUDE_PLUGIN_DATA` nor its braced form.** Two reasons:
 
 - **It expands to nothing in a shell.** Claude Code substitutes that variable
   into skill *text*, and only when written braced; it does not export it to the
@@ -75,10 +74,9 @@ structural one:
   three manifests point at this one `skills/` directory rather than copying it,
   so a host-specific token ships verbatim to two hosts that will never resolve
   it — the Agent Plugins spec requires a client to leave unrecognized
-  placeholders literal.
-- **One path means one install**, shared by all three hosts and outliving plugin
-  updates. Anything under the plugin's *install* directory does not survive:
-  uninstall+install deletes and rebuilds it.
+  placeholders literal. The computed path also gives one install shared by all
+  three hosts that outlives plugin updates, unlike anything under the plugin's
+  own install directory, which uninstall+install deletes and rebuilds.
 
 POSIX shell: `$HOME` resolves under Git Bash and WSL. A native PowerShell
 session has no rung-3 story and falls to a global install (rung 2) via
@@ -218,9 +216,8 @@ change it.
    "present" is not "current".** Detect what's already true — CLI installed?
    *at which version?* already logged in? workspace already linked? — and skip
    finished steps. Don't assume a blank slate, and don't assume nothing needs
-   to happen just because the CLI is present. An installed-but-stale CLI is
-   the case the ladder is blindest to, because it satisfies every rung it
-   reaches; see [Is the resolved copy current?](#is-the-resolved-copy-current).
+   to happen just because the CLI is present; see
+   [Is the resolved copy current?](#is-the-resolved-copy-current).
 5. **Wire up an existing repo only. Never scaffold a new API.** If there's no
    spec or collection yet, that's a design decision for the user to make.
    Report the gap; do not generate a starter spec to fill it.
@@ -246,26 +243,23 @@ change it.
    is out of date without having compared the two version strings, and never
    make a refresh a precondition for answering the question that was asked.
 7. **Specs belong to Spec Hub. The API Builder is deprecated — never route new
-   work to `postman api`.** Postman's docs are explicit: the API Builder *"is
-   no longer supported in Postman v12 and later"* and *"Spec Hub has replaced
-   the API Builder"*; `postman api lint` is *"supported for API Builder
-   objects in Postman v11, but not in v12 and later"*. So `postman spec lint`
-   is the command for a specification, and `postman api …` applies only to a
-   pre-existing v11 API Builder object. The `api` resource is still listed in
-   `postman -h` and prints **no deprecation warning**, so seeing it there is
-   not evidence it is current — this rule is. If a repo has API Builder
-   artifacts, say they need migrating to Spec Hub rather than quietly
-   building on them.
-8. **Write no host-specific path into a command.** One `skills/` directory is
-   loaded by Claude Code, Cursor and Kimi Code, so a command that only resolves
-   on one host is broken on the other two — and, as rung 1's note records, a
-   host variable that is substituted into text but absent from the shell
-   environment is broken on that host too. Derive paths in the shell from what
-   a fresh shell always has — `$HOME`, `$XDG_DATA_HOME` — and write the whole
-   expression in each command rather than carrying it in a variable between
-   calls. If a host genuinely needs its own handling, branch on something
-   observable at runtime, never on a variable the host is assumed to have set.
-   This applies to every skill in the plugin; bootstrap is just where the paths
+   work to `postman api`.** Postman's docs are explicit: *"The Postman API
+   Builder isn't supported in Postman v12 and later"*, and *"Postman's Spec
+   Hub has replaced the API Builder as the recommended tool for managing API
+   specifications in Postman."* Both `api lint` and `api publish` are
+   documented as "(Postman v11 only)". So `postman spec lint` is the command
+   for a specification, and `postman api …` applies only to a pre-existing
+   v11 API Builder object. The `api` resource is still listed in `postman -h`
+   and prints **no deprecation warning**, so seeing it there is not evidence
+   it is current — this rule is. If a repo has API Builder artifacts, say
+   they need migrating to Spec Hub rather than quietly building on them.
+8. **Write no host-specific path into a command.** A command that only
+   resolves on one host is broken on the others — see
+   [The data directory](#the-data-directory-compute-it-never-inherit-it) for
+   why, and for how to derive one that works on all three. If a host
+   genuinely needs its own handling, branch on something observable at
+   runtime, never on a variable the host is assumed to have set. This
+   applies to every skill in the plugin; bootstrap is just where the paths
    are.
 
 ## Verification
@@ -283,7 +277,7 @@ without having compared.
 
 ## Reference
 
-- [Collection Schema v3](reference/collection_schema_v3.md) — the schema for
-  the collection files this skill resolves the directory for.
+- `collection-schema-v3` skill — the schema for the collection files this
+  skill resolves the directory for.
 - [CLI Installation](reference/cli_installation.md) — install/update/
   uninstall commands per platform.

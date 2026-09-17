@@ -23,7 +23,7 @@ it lands.
 .claude-plugin/plugin.json        the Claude Code plugin manifest
 .cursor-plugin/plugin.json        the Cursor plugin manifest
 .kimi-plugin/plugin.json          the Kimi Code plugin manifest
-skills/<name>/SKILL.md            one skill per directory (bootstrap, mocking, ci, monitoring, api-documentation, ...)
+skills/<name>/SKILL.md            one skill per directory — see skills/ for the current list
 manifest.json                     generated index of the skill files
 scripts/build-manifest.js         regenerates it
 ```
@@ -57,6 +57,14 @@ of failing loudly.
 
 Create `skills/<name>/SKILL.md` with `name` and `description`
 frontmatter, where `name` matches the directory. Run the manifest script.
+
+## Removing a skill
+
+Delete `skills/<name>/`, then grep the rest of the repo for that name —
+`grep -rn "<name>" README.md skills/ intent.md` — since other `SKILL.md`
+files and this README can reference a skill by name in prose, not just in
+frontmatter, and nothing catches a stale reference automatically. Fix or
+remove what turns up, then run the manifest script.
 
 ## The bindings placeholder
 

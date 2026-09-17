@@ -22,14 +22,14 @@
         {
           "target": "SKILL.md",
           "source": "skills/bootstrap/SKILL.md",
-          "bytes": 9575,
-          "sha256": "2310d529c0f18e827d9a4749939bdb428f8b760536dad88ba33d1077703670e4"
+          "bytes": 15250,
+          "sha256": "dc9657e72fb076e688de7a80b033e6da339ca592119b927baf349722d35fed23"
         },
         {
           "target": "reference/cli_installation.md",
           "source": "skills/bootstrap/reference/cli_installation.md",
-          "bytes": 1375,
-          "sha256": "484382d6eae7ba4eee3af03475a229b1aa952b711be681d09b66abbc32688404"
+          "bytes": 2711,
+          "sha256": "e3f550a4b7eb963d1c241a048acdf13dad8dbc01c42f7723646c640f14e7ed77"
         },
         {
           "target": "reference/collection_schema_v3.md",

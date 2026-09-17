@@ -44,20 +44,86 @@ where it is the whole answer:
 
 ## Resolving the invocation
 
-Work down this ladder and stop at the first rung that answers. Record the
-absolute path you settled on so later sessions skip straight to rung 1.
+### The data directory: compute it, never inherit it
 
-1. `$CLAUDE_PLUGIN_DATA/postman-bin`, if it exists and holds an absolute path —
-   verify it with `--version` and use it. This is the normal case after the
-   first session.
-2. `postman --version`. If a global install answers, record its path with
-   `command -v postman > "$CLAUDE_PLUGIN_DATA/postman-bin"` and use it.
-3. Install once into the plugin's own data directory, then record it:
+Rungs 1-3 all read and write one plugin-owned directory:
 
+```
+${XDG_DATA_HOME:-$HOME/.local/share}/postman-plugin
+```
+
+**Write that expression out in full in every command that needs it.** Each Bash
+call is a fresh shell: *"Environment variables don't persist. An `export` in one
+command won't be available in the next."* A `PM_DATA=…` assignment in one call
+is gone by the next, so assign it only to use it **within that same call**, as
+rungs 2 and 3 do.
+
+**Never substitute a host-provided plugin variable here — neither the bare
+`$CLAUDE_PLUGIN_DATA` nor its braced form.** Two measured reasons and one
+structural one:
+
+- **It expands to nothing in a shell.** Claude Code substitutes that variable
+  into skill *text*, and only when written braced; it does not export it to the
+  Bash tool's environment. The bare `$CLAUDE_PLUGIN_DATA` above is therefore
+  neither substituted nor set — which is why this file writes it bare, and why
+  you are reading a name rather than a path. The resulting failure is loud but
+  misdirecting: `mkdir -p ""` exits 1 with `cannot create directory ''`, which
+  reads as a filesystem problem rather than an unexpanded variable, and the
+  `&&` chain short-circuits, so the session never gets a data directory and
+  falls through to rung 4.
+- **Cursor and Kimi Code load these same files and substitute nothing.** All
+  three manifests point at this one `skills/` directory rather than copying it,
+  so a host-specific token ships verbatim to two hosts that will never resolve
+  it — the Agent Plugins spec requires a client to leave unrecognized
+  placeholders literal.
+- **One path means one install**, shared by all three hosts and outliving plugin
+  updates. Anything under the plugin's *install* directory does not survive:
+  uninstall+install deletes and rebuilds it.
+
+POSIX shell: `$HOME` resolves under Git Bash and WSL. A native PowerShell
+session has no rung-3 story and falls to a global install (rung 2) via
+[reference/cli_installation.md](reference/cli_installation.md).
+
+### The ladder
+
+Work down it and stop at the first rung that answers. Record the absolute path
+you settled on so later sessions skip straight to rung 1.
+
+1. The recorded path, if the record is non-empty and the binary it names still
+   answers. Read and verify in one call; a missing record is a quiet miss, not
+   an error worth reporting.
+
+   ```bash
+   PM_BIN=$(cat "${XDG_DATA_HOME:-$HOME/.local/share}/postman-plugin/postman-bin" 2>/dev/null) \
+     && [ -n "$PM_BIN" ] && "$PM_BIN" --version
    ```
-   npm install --prefix "$CLAUDE_PLUGIN_DATA" --no-save postman-cli
-   printf '%s\n' "$CLAUDE_PLUGIN_DATA/node_modules/.bin/postman" \
-     > "$CLAUDE_PLUGIN_DATA/postman-bin"
+
+   If the record exists but the binary no longer answers, the record is stale —
+   delete it and continue to rung 3, **not** rung 2. A global install found by
+   rung 2 can sit on a version-manager path (`.nvm/versions/node/<v>/bin`) that
+   dies on the next `nvm use`, so re-recording one is how a dead record comes
+   back. Rung 3's copy does not move.
+2. `postman --version`. If a global install answers, record its path and use it.
+   Resolve first, write only on success — a bare redirect truncates the record
+   before `command -v` has answered, leaving an empty file that rung 1 would
+   later have to reject:
+
+   ```bash
+   PM_DATA="${XDG_DATA_HOME:-$HOME/.local/share}/postman-plugin"
+   PM_BIN=$(command -v postman) && mkdir -p "$PM_DATA" \
+     && printf '%s\n' "$PM_BIN" > "$PM_DATA/postman-bin"
+   ```
+3. Install once into the plugin's own data directory, then record it. One call,
+   so the variable survives to the lines that use it, and `&&`-chained
+   throughout — an unchained `printf` would record a path that `npm install`
+   never created, which rung 1 then reports as a success next session and rung 4
+   never gets the chance to catch:
+
+   ```bash
+   PM_DATA="${XDG_DATA_HOME:-$HOME/.local/share}/postman-plugin" \
+     && mkdir -p "$PM_DATA" \
+     && npm install --prefix "$PM_DATA" --no-save postman-cli \
+     && printf '%s\n' "$PM_DATA/node_modules/.bin/postman" > "$PM_DATA/postman-bin"
    ```
 
    This happens once per machine, not once per session. Tell the user it is
@@ -72,20 +138,47 @@ See [reference/cli_installation.md](reference/cli_installation.md) for the
 per-platform install/update/uninstall commands behind rungs 2-4 (npm,
 curl, PowerShell).
 
+### Invoking what the ladder resolved
+
+**Rungs 1, 3 and 4 all leave the binary off `PATH` by design, so a bare
+`postman …` returns "command not found" on every rung except 2.** That is the
+same signal Critical Rule 2 warns misroutes a session into rung 4 — and it is
+reached by following a `postman …` command rather than by any decision. Bind
+the resolved invocation once per call and use it:
+
+```bash
+PM="$(cat "${XDG_DATA_HOME:-$HOME/.local/share}/postman-plugin/postman-bin")" \
+  && "$PM" --version
+```
+
+**Read every `postman …` in this file and in the sibling skills as `"$PM" …`** —
+including the `-h` commands above and the drift check below. On rung 4 alone
+`$PM` is not a path: substitute `npx --yes --package=postman-cli postman` for it
+and expect a registry fetch per call.
+
 ### Is the resolved copy current?
 
 Rungs 1 and 2 establish that *something runs*, not that something *current*
 runs — `--version` is a liveness probe there, so a binary installed months ago
-wins the ladder indefinitely and rung 3 never fires again. Compare
-`postman --version` against `npm view postman-cli version` once per session,
-before real work — see
-[reference/cli_installation.md](reference/cli_installation.md).
+wins the ladder indefinitely and rung 3 never fires again. Compare the two once
+per session, before real work — see
+[reference/cli_installation.md](reference/cli_installation.md):
+
+```bash
+"$PM" --version                # installed, via the resolved invocation
+npm view postman-cli version   # latest published
+```
+
+Skip this immediately after rung 3 fired: you just installed `latest`, so there
+is nothing to compare.
 
 What to do about a mismatch depends on who owns that copy:
 
-- **Rungs 1 and 3 — the plugin's own copy**, under `$CLAUDE_PLUGIN_DATA`. Ours
-  to maintain: re-run rung 3's `npm install --prefix …` to refresh it, then say
-  you did and which version replaced which.
+- **Rungs 1 and 3 — the plugin's own copy**, in the data directory. Ours to
+  maintain: re-run **rung 3's block in full** to refresh it, then say you did
+  and which version replaced which. Reconstructing the `npm install` line alone
+  gives `--prefix ""`, which installs into the current directory and drops a
+  `node_modules/` into the user's repo.
 - **Rung 2 — a global install the user owns.** Report the drift, name both
   versions, and let them decide. **Never `npm install -g` over it**: it may
   have come from the curl installer or a system package manager, and upgrading
@@ -102,14 +195,22 @@ change it.
 ## Critical Rules
 
 1. **A missing `postman` binary is never a reason to switch to the MCP
-   fallback.** Rung 3 installs the real CLI into the plugin's own data
-   directory. Routing to `postman-mcp-fallback` because the binary is not on
+   fallback.** Rung 3 installs the real CLI under
+   `${XDG_DATA_HOME:-$HOME/.local/share}/postman-plugin`, off `PATH` by design.
+   Routing to `postman-mcp-fallback` because the binary is not on
    `PATH` defeats the entire point of this plugin. Only no shell, no Node, or a
    hosted session that cannot install qualifies.
 2. **Never record an `npx` invocation as the resolved answer.** `npx`
    re-resolves the package from the registry on every call, so persisting it
    makes every later session pay a network fetch. Only an absolute path gets
    recorded.
+
+   The observed way this goes wrong is not a deliberate choice: an unresolved
+   data directory makes rungs 1-3 all fail on a path that expanded to nothing,
+   and the session falls through to rung 4 and stays there for every
+   subsequent command. If you are about to reach for `npx`, echo the data
+   directory path first and confirm it is non-empty — that is the actual fault
+   far more often than a missing Node.
 3. **Never fabricate a workspace id, spec path, or collections directory.**
    If the CLI can't resolve one, report the gap and stop. A guessed value
    here corrupts every skill that trusts it downstream.
@@ -155,6 +256,17 @@ change it.
    not evidence it is current — this rule is. If a repo has API Builder
    artifacts, say they need migrating to Spec Hub rather than quietly
    building on them.
+8. **Write no host-specific path into a command.** One `skills/` directory is
+   loaded by Claude Code, Cursor and Kimi Code, so a command that only resolves
+   on one host is broken on the other two — and, as rung 1's note records, a
+   host variable that is substituted into text but absent from the shell
+   environment is broken on that host too. Derive paths in the shell from what
+   a fresh shell always has — `$HOME`, `$XDG_DATA_HOME` — and write the whole
+   expression in each command rather than carrying it in a variable between
+   calls. If a host genuinely needs its own handling, branch on something
+   observable at runtime, never on a variable the host is assumed to have set.
+   This applies to every skill in the plugin; bootstrap is just where the paths
+   are.
 
 ## Verification
 

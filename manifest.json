@@ -9,8 +9,8 @@
         {
           "target": "SKILL.md",
           "source": "skills/api-discovery/SKILL.md",
-          "bytes": 4660,
-          "sha256": "7b04786758dcabd1a1f71b1183c8d5f29d649195b09f09eab3a60bf4414e909e"
+          "bytes": 4918,
+          "sha256": "cceca5cf3b1feab3e664ef50d3d42a0b7c5305f8e1cd744ca21b86ab27883fd9"
         },
         {
           "target": "reference/search_filters.md",
@@ -133,19 +133,6 @@
           "source": "skills/postman-mcp-fallback/SKILL.md",
           "bytes": 7881,
           "sha256": "c078b5623786dfa5ac3b21eafc55496880cd16bf8cd77fc2924f9cded172f6eb"
-        }
-      ]
-    },
-    {
-      "name": "spec-authoring",
-      "plugin": "postman",
-      "description": "Authors and validates an OpenAPI/AsyncAPI specification tracked in Postman's Spec Hub — a plain spec file, or a git-native multi-file spec directory. Use when the user asks to \"write/update this OpenAPI spec,\" \"lint this spec,\" \"check the spec against our governance rules,\" or \"is this spec ready for an AI agent to consume.\" Covers `postman spec`. Never routes to `postman api` — see bootstrap's Rules on the deprecated API Builder. Depends on bootstrap for the spec path and workspace id (governance rulesets come from the workspace).",
-      "files": [
-        {
-          "target": "SKILL.md",
-          "source": "skills/spec-authoring/SKILL.md",
-          "bytes": 3298,
-          "sha256": "2cc51bcc819e3e88b7bcaed76e6d08151d1e9954727f9c42edc4ba08bf6f2fff"
         }
       ]
     }

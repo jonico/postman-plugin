@@ -9,8 +9,8 @@
         {
           "target": "SKILL.md",
           "source": "skills/api-documentation/SKILL.md",
-          "bytes": 2187,
-          "sha256": "4f7ede273daf6be6f1e31039e250f0e919c5a9894fcc0a672310a6ac83cea630"
+          "bytes": 2813,
+          "sha256": "8a5ce2d34639a50e5dd1b2ed9548f0a7c5d22569db995f4df58af04a42a7b8f2"
         }
       ]
     },
@@ -22,14 +22,14 @@
         {
           "target": "SKILL.md",
           "source": "skills/bootstrap/SKILL.md",
-          "bytes": 4760,
-          "sha256": "8dae32c3fd8ded0468b6dde605ed674fb8641a86528c5c57b46db34fe5d46418"
+          "bytes": 15250,
+          "sha256": "dc9657e72fb076e688de7a80b033e6da339ca592119b927baf349722d35fed23"
         },
         {
           "target": "reference/cli_installation.md",
           "source": "skills/bootstrap/reference/cli_installation.md",
-          "bytes": 946,
-          "sha256": "a02e35b5de2ae62aacce2a4d3131c2b6bef4ed8785101b97f22cb0e835b02cf6"
+          "bytes": 2711,
+          "sha256": "e3f550a4b7eb963d1c241a048acdf13dad8dbc01c42f7723646c640f14e7ed77"
         },
         {
           "target": "reference/collection_schema_v3.md",
@@ -47,21 +47,21 @@
         {
           "target": "SKILL.md",
           "source": "skills/ci/SKILL.md",
-          "bytes": 3472,
-          "sha256": "3928e86ddc6a0c467c1ce07af2b99a50aa3cd44ca63d6d18f99bfaf71293afc6"
+          "bytes": 4879,
+          "sha256": "e93b43573676667697c3bdc2fc6c53eb2c5dacc7c1c786bd28e61c64a5a846b0"
         }
       ]
     },
     {
       "name": "mocking",
       "plugin": "postman",
-      "description": "Stands up a Postman mock server generated from the repo's spec examples or a collection's saved responses, so a consumer can build against the contract before the implementation exists. Use when the user asks to \"mock this API\", \"stand up a mock server\", or \"let the frontend build against this before it is implemented\". Defaults to a local mock; a cloud mock is publicly reachable and spends mock-call quota. Requires bootstrap.",
+      "description": "Stands up a Postman mock server generated from the repo's spec examples or a collection's saved responses, so a consumer can build against the contract before the implementation exists. Use when the user asks to \"mock this API\", \"stand up a mock server\", or \"let the frontend build against this before it is implemented\". Defaults to a local mock; a cloud mock spends mock-call quota, and a cloud mock server's URL stays private behind an x-api-key header unless --public is passed. Requires bootstrap.",
       "files": [
         {
           "target": "SKILL.md",
           "source": "skills/mocking/SKILL.md",
-          "bytes": 2370,
-          "sha256": "06e84848c228b35dffd8d7d5ecff93b987126e17bc79c9bee560dc73e40f6eaa"
+          "bytes": 3327,
+          "sha256": "66b44f0c4c4df4391e507d4e1397a97910c9afac3beabae73aa003588d598519"
         }
       ]
     },
@@ -73,8 +73,8 @@
         {
           "target": "SKILL.md",
           "source": "skills/monitoring/SKILL.md",
-          "bytes": 2429,
-          "sha256": "735f7c9eaf064af6462c1f6e4a7e16923043c346b59a6ba5c0479b66612cbb36"
+          "bytes": 2808,
+          "sha256": "523d55a13cee9ddbc839a0d14599dffe593ea2120f6941b76129a31bb84c1412"
         }
       ]
     },

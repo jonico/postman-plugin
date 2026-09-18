@@ -9,8 +9,8 @@
         {
           "target": "SKILL.md",
           "source": "skills/ai-readiness/SKILL.md",
-          "bytes": 2404,
-          "sha256": "069d9aaea14d39e8b4f5915ada5de2cb60f34ba849de98e2cb89948087be5584"
+          "bytes": 2432,
+          "sha256": "b6a398918babc3dbfe35c1107c25d8de80644c599566ce2da40123c54560b1f3"
         }
       ]
     },
@@ -80,8 +80,8 @@
         {
           "target": "SKILL.md",
           "source": "skills/bootstrap/SKILL.md",
-          "bytes": 6761,
-          "sha256": "70cc68352c0a43c03dc48881bd41199424e363124310084f319bcccc5b6ecf0d"
+          "bytes": 6891,
+          "sha256": "30fdacea2d1180bbd93e2c653dfd7bebee01c71c09a40be686f13fc1b84b4907"
         },
         {
           "target": "reference/cli_installation.md",
@@ -137,15 +137,27 @@
       ]
     },
     {
-      "name": "postman-mcp-fallback",
+      "name": "postman-mcp-server",
       "plugin": "postman",
-      "description": "Falls back to Postman's own MCP server when the CLI cannot be used, and is the reference for using that surface once connected. Use when the user explicitly asks to connect an agent to Postman's MCP tools, to pick a toolset, or to judge an MCP result such as a `getCollection` response or a `createMock` default. For agent-initiated routing it is gated to two cases — bootstrap attempted a CLI install and that install actually failed, or the CLI simply has no verb for the task at all (confirmed via `-h`, e.g. adding a comment to a collection) — and a `postman` binary missing from PATH is never on its own a qualifying reason, because bootstrap installs the CLI itself. Covers Postman's API as MCP tools, not the repo-local CLI workflow the other skills drive.",
+      "description": "Postman concepts and MCP tool guidance. Loaded when working with Postman MCP tools to make better decisions about tool selection and workarounds.",
       "files": [
         {
           "target": "SKILL.md",
-          "source": "skills/postman-mcp-fallback/SKILL.md",
-          "bytes": 9603,
-          "sha256": "333fbf1bd756aa47f50ad4b7c1b24f9703a2186cc2196223ab93dc8fca14ae76"
+          "source": "skills/postman-mcp-server/SKILL.md",
+          "bytes": 3418,
+          "sha256": "c4894069418740a1c92785cd6fe94b1ee88003595393c7f196775303e44d77f4"
+        },
+        {
+          "target": "references/mcp-limitations.md",
+          "source": "skills/postman-mcp-server/references/mcp-limitations.md",
+          "bytes": 1704,
+          "sha256": "38f7558fde730622557c18336076ffa3d9f58d127b2b726e5ae661c14c85a798"
+        },
+        {
+          "target": "references/setup.md",
+          "source": "skills/postman-mcp-server/references/setup.md",
+          "bytes": 5579,
+          "sha256": "565cb4cf09a0a5919acd368e2429b7744b5b8cbd23bfcd40e536c1707b620d11"
         }
       ]
     }

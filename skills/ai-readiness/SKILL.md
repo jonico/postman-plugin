@@ -21,24 +21,24 @@ Two ways to run this check, same rubric family, different target — pick by wha
 
 ## Scoring
 
-- **Critical checks (4x weight):** Blocks agent usage entirely
-- **High checks (2x weight):** Causes frequent agent failures
-- **Medium checks (1x weight):** Degrades agent performance
-- **Low checks (0.5x weight):** Nice-to-have improvements
+The command computes and prints the score itself — read the fields it
+gives you, don't recompute them:
 
-**Agent Ready = score of 70% or higher with zero critical failures.**
+- **`readiness`** (score 0-100 + bucket) is the headline number. Buckets,
+  low to high: **Limited → Fair → Good → Excellent**.
+- **`confidence`** (`high`/`medium`/`low`) says how many signals it
+  could actually measure vs. had to mark `unknown` — a data-quality
+  caveat, not part of the score.
 
 ## Interpreting Results
 
-- **90-100%:** Excellent. Agents can use this API reliably.
-- **70-89%:** Agent-ready. Minor improvements possible.
-- **50-69%:** Not agent-ready. Key issues need fixing.
-- **Below 50%:** Significant work needed. Focus on critical failures first.
-
-State the actual score and verdict the command printed, which verb ran
-(`collection ai-readiness` vs. `spec ai-readiness`), which target was
-scored (local path vs. cloud ID) and which output mode was used, and — if
-`--min-score` was set — the resulting exit code, not just "it passed."
+Report the bucket, score, and confidence the command actually printed
+— don't infer a percentage band. Doc coverage is a modifier via its
+adjustment, not a separate gate; call it out by name when it's `low`,
+since recommendations flag that first. Also state which verb ran
+(`collection` vs. `spec` `ai-readiness`), which target was scored
+(local path vs. cloud ID), the output mode, and — if `--min-score` was
+set — the resulting exit code, not just "it passed."
 
 You can ask user if they would like to set this check with a min score guarantee to run on their CI.
 

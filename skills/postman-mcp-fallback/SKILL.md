@@ -17,17 +17,14 @@ of this plugin. `bootstrap`, `api-mocking`, `api-testing`, `api-monitoring`,
 Postman CLI inside a repo's local workflow. This skill governs calling
 Postman's tools directly once its MCP server is connected — a different
 surface, with its own toolset choice, its own auth model, and defaults that
-don't match the CLI's. `api-code-generation` builds on this same surface for
-one specific job — installing a Postman request as client code in the
-repo — and defers to this skill for connection and toolset choice rather
-than repeating it.
+don't match the CLI's.
 
 ## Toolsets, chosen at connection time
 
 | Toolset | Size | Contents | Use when |
 | --- | --- | --- | --- |
 | `minimal` (default) | medium | Core create/read/update on one collection, workspace, environment, spec, or mock at a time; `runCollection`; `duplicateCollection`; `searchPostmanElements` | Modifying a single element, the common case |
-| `code` | small, read-only | Context and code-gen tools (`getCodeGenerationInstructions`, `get*Context` family) | Generating client code (see `api-code-generation`) or feeding API context to the agent, not editing Postman |
+| `code` | small, read-only | Context and code-gen tools (`getCodeGenerationInstructions`, `get*Context` family) | Generating client code or feeding API context to the agent, not editing Postman |
 | `full` | largest | Everything in `minimal` plus comments, folder/request/response transfer, forks, pull requests, monitors, packages, SDKs, workspace roles, private network management, analytics | The task genuinely needs monitors, SDKs, governance/comments, or Enterprise collaboration |
 | `learn` | smallest — one tool | `searchLearningCenter` only | Looking up Postman's own docs, nothing else |
 
@@ -153,8 +150,6 @@ where the server is most likely to have moved since it was written:
 
 ## Reference
 
-- `api-code-generation` skill — the install-as-client-code workflow built on
-  this surface's `code` toolset.
 - `api-discovery` skill — the CLI-side `search`/`context-graph` equivalent
   for finding whether something exists, a different dataset than this
   surface's `searchPostmanElements`.

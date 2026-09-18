@@ -21,7 +21,8 @@
         "mocking",
         "monitoring",
         "ci",
-        "documentation"
+        "documentation",
+        "ai-readiness"
       ],
       "category": "api-development"
     }

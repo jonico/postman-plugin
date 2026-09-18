@@ -13,17 +13,21 @@ create, read, update, and delete workspaces, collections, environments,
 specs, mocks, and monitors; run a collection; generate client code; search
 the org's API catalog. This is a different integration point from the rest
 of this plugin. `bootstrap`, `api-mocking`, `api-testing`, `api-monitoring`,
-`spec-authoring`, `performance-testing`, `api-discovery` and `ci-integration`
-all wrap the Postman CLI inside a repo's local workflow. This skill governs calling Postman's tools directly once its MCP
-server is connected — a different surface, with its own toolset choice, its
-own auth model, and defaults that don't match the CLI's.
+`performance-testing`, `api-discovery` and `ci-integration` all wrap the
+Postman CLI inside a repo's local workflow. This skill governs calling
+Postman's tools directly once its MCP server is connected — a different
+surface, with its own toolset choice, its own auth model, and defaults that
+don't match the CLI's. `api-code-generation` builds on this same surface for
+one specific job — installing a Postman request as client code in the
+repo — and defers to this skill for connection and toolset choice rather
+than repeating it.
 
 ## Toolsets, chosen at connection time
 
 | Toolset | Size | Contents | Use when |
 | --- | --- | --- | --- |
 | `minimal` (default) | medium | Core create/read/update on one collection, workspace, environment, spec, or mock at a time; `runCollection`; `duplicateCollection`; `searchPostmanElements` | Modifying a single element, the common case |
-| `code` | small, read-only | Context and code-gen tools (`getCodeGenerationInstructions`, `get*Context` family) | Generating client code or feeding API context to the agent, not editing Postman |
+| `code` | small, read-only | Context and code-gen tools (`getCodeGenerationInstructions`, `get*Context` family) | Generating client code (see `api-code-generation`) or feeding API context to the agent, not editing Postman |
 | `full` | largest | Everything in `minimal` plus comments, folder/request/response transfer, forks, pull requests, monitors, packages, SDKs, workspace roles, private network management, analytics | The task genuinely needs monitors, SDKs, governance/comments, or Enterprise collaboration |
 | `learn` | smallest — one tool | `searchLearningCenter` only | Looking up Postman's own docs, nothing else |
 
@@ -91,6 +95,33 @@ Transport is chosen the same way, at connection time, not per call:
    request bodies, scripts, or saved examples — the full payload of a large
    collection can be large enough to be worth avoiding by default.
 
+## Known rough edges
+
+Behaviors specific tools have had that are easy to misread as a bug in the
+request rather than the server. Confirm against the tool's own schema/
+description before relying on one of these as still true — this list is
+where the server is most likely to have moved since it was written:
+
+- **`generateCollection` and `syncCollectionWithSpec` don't return the
+  result — they return HTTP 202 (accepted).** Poll a status/task tool for
+  completion instead of treating the initial response as the finished
+  collection.
+- **`syncCollectionWithSpec` has historically supported OpenAPI 3.0 only.**
+  For Swagger 2.0 or OpenAPI 3.1 specs, update the spec file directly and
+  regenerate the collection rather than syncing it.
+- **`createCollection` creates a flat collection — it doesn't nest folders
+  in one call.** Build depth by creating the collection first, then adding
+  folders, then adding requests into them, rather than passing a nested
+  structure and expecting it to land.
+- **A `noauth` placeholder isn't always available on every auth-type
+  enum.** Where it's missing, an endpoint that needs no auth is better
+  expressed by inheriting the collection's auth setting than by picking an
+  unrelated auth type as a stand-in.
+- **Very large specs can hit request-size limits on spec-creation tools.**
+  For a spec too large to push in one call, decompose it locally and create
+  collection items directly (collection, then folders, then requests, then
+  responses) instead of pushing the whole spec at once.
+
 ## Process
 
 1. Pick a toolset for the task (table above).
@@ -119,3 +150,11 @@ Transport is chosen the same way, at connection time, not per call:
   `searchPostmanElements` actually ran first.
 - Before creating or publishing a mock, state explicitly whether it's public
   or `private: true` was passed.
+
+## Reference
+
+- `api-code-generation` skill — the install-as-client-code workflow built on
+  this surface's `code` toolset.
+- `api-discovery` skill — the CLI-side `search`/`context-graph` equivalent
+  for finding whether something exists, a different dataset than this
+  surface's `searchPostmanElements`.

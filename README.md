@@ -94,6 +94,15 @@ override `plugin.json` and give the repo a second source of truth.
 Semantic versioning: a breaking change to a skill's contract is major, a new
 skill is minor, and a wording or bug fix is patch.
 
+TODO: none of this is enforced. Nothing fails a PR that changes `skills/`
+without bumping the version, and nothing catches the six strings drifting
+apart — `.kimi-plugin/plugin.json` sat at 1.0.0 while three other surfaces
+said 2.0.0. Worth adding to `validate.yml`: a sync check across all six
+spots, a PR gate requiring a semver-greater version when shipped files
+change, and a `scripts/bump-version.js` so the bump is one command instead
+of six edits. `claude plugin validate .` would also catch manifest schema
+errors the current JSON.parse loop cannot.
+
 ## Adding a skill
 
 Create `skills/<name>/SKILL.md` with `name` and `description`

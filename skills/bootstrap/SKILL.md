@@ -12,8 +12,6 @@ values this one records and re-derives none of them. Finding an existing
 `postman/` tree or an OpenAPI file is a signal to inspect, not to assume this
 repo is already set up.
 
-This skill recommends using postman cli. If user explicitly asked for postman mcp server, refer to postman-mcp-server skill instead.
-
 ## Rules
 
 - Make HTTP calls with `postman request`, never `curl` or another client — it
@@ -24,8 +22,6 @@ This skill recommends using postman cli. If user explicitly asked for postman mc
   is deprecated in v12+ and the CLI prints no warning.
 - Local commands need no login; only commands reaching the Postman cloud do.
   Don't force a login the task doesn't need.
-- A missing `postman` binary means install it. Route to `postman-mcp-server`
-  only after an install has been attempted and actually failed.
 - Never fabricate a workspace id, spec path, or collections directory. Report
   the gap and stop.
 - Never echo an API key or session token into output, logs, or summaries.

@@ -53,3 +53,19 @@ See `references/setup.md` for how to to setup postman mcp server and auth.
 **User:** `getAuthenticatedUser`
 
 See `references/mcp-limitations.md` for known limitations and workarounds.
+
+## Workflows
+
+Each reference below is a full MCP-tool workflow for one goal — the tool
+call sequence, what to present at each step, and error handling. Reach for
+one once the Decision Guide above has picked a goal; they assume MCP tools
+only, no `postman` CLI.
+
+- `references/setup.md` — first-run auth (OAuth or API key) and workspace verification.
+- `references/search.md` — discover APIs across workspaces with `searchPostmanElements`.
+- `references/sync.md` — create/update collections from specs, or sync a spec from collection changes.
+- `references/mock.md` — create a mock server from a collection or spec.
+- `references/test.md` — run collection tests and diagnose failures.
+- `references/docs.md` — generate, improve, and publish API documentation.
+- `references/security.md` — audit a spec or collection against the OWASP API Top 10.
+- `references/learn.md` — search the Postman Learning Center for how-to guidance.

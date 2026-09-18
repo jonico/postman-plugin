@@ -80,8 +80,8 @@
         {
           "target": "SKILL.md",
           "source": "skills/bootstrap/SKILL.md",
-          "bytes": 6616,
-          "sha256": "d3a8825e3fe570880b817bab95e7ed55fea7d0e9e4d89d8fa915f57a0a752d08"
+          "bytes": 6757,
+          "sha256": "62f7a19311755576b599de8ffa5458c8436148371efcd516969f955bf4eb5003"
         },
         {
           "target": "reference/cli_installation.md",

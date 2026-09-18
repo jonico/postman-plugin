@@ -22,6 +22,8 @@ repo is already set up.
   is deprecated in v12+ and the CLI prints no warning.
 - Local commands need no login; only commands reaching the Postman cloud do.
   Don't force a login the task doesn't need.
+- A missing `postman` binary means install it. Route to `postman-mcp-server`
+  only after an install has been attempted and actually failed.
 - Never fabricate a workspace id, spec path, or collections directory. Report
   the gap and stop.
 - Never echo an API key or session token into output, logs, or summaries.

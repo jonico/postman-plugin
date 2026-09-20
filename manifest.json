@@ -4,13 +4,13 @@
     {
       "name": "api-discovery",
       "plugin": "postman",
-      "description": "Finds what APIs, collections, specs, or requests already exist before building something new, and answers questions about how they relate. Use when the user asks \"does an API for X already exist,\" \"what depends on this service,\" \"what does this API do,\" or before scaffolding anything that might already have a Postman equivalent. Covers `postman search`, `postman context-graph`, and `postman context instructions discovery`. Reach for `search` when you know roughly what you're looking for by name; reach for the Context Graph when the question is about relationships, not names.",
+      "description": "Finds what APIs, collections, specs, or requests already exist before building something new, and answers questions about how they relate. Use when the user asks \"does an API for X already exist,\" \"what depends on this service,\" \"what does this API do,\" or before scaffolding anything that might already have a Postman equivalent. Covers Orbit (public APIs), `postman search`, `postman context-graph`, and `postman context instructions discovery`. Reach for Orbit for public third-party APIs; reach for `search` when you know roughly what you're looking for by name inside Postman; reach for the Context Graph when the question is about relationships, not names.",
       "files": [
         {
           "target": "SKILL.md",
           "source": "skills/api-discovery/SKILL.md",
-          "bytes": 4918,
-          "sha256": "cceca5cf3b1feab3e664ef50d3d42a0b7c5305f8e1cd744ca21b86ab27883fd9"
+          "bytes": 6290,
+          "sha256": "55ba67e545fa942b0ee3f0fafa76f28b8c369bad79905af8979356cf32850dfd"
         },
         {
           "target": "reference/search_filters.md",

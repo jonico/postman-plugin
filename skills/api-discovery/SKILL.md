@@ -1,14 +1,18 @@
 ---
 name: api-discovery
-description: Finds what APIs, collections, specs, or requests already exist before building something new, and answers questions about how they relate. Use when the user asks "does an API for X already exist," "what depends on this service," "what does this API do," or before scaffolding anything that might already have a Postman equivalent. Covers `postman search`, `postman context-graph`, and `postman context instructions discovery`. Reach for `search` when you know roughly what you're looking for by name; reach for the Context Graph when the question is about relationships, not names.
+description: Finds what APIs, collections, specs, or requests already exist before building something new, and answers questions about how they relate. Use when the user asks "does an API for X already exist," "what depends on this service," "what does this API do," or before scaffolding anything that might already have a Postman equivalent. Covers Orbit (public APIs), `postman search`, `postman context-graph`, and `postman context instructions discovery`. Reach for Orbit for public third-party APIs; reach for `search` when you know roughly what you're looking for by name inside Postman; reach for the Context Graph when the question is about relationships, not names.
 ---
 
 # API Discovery
 
 ## Overview
 
-Two unconnected datasets, so pick by data source, not question shape:
+Three unconnected datasets — pick by data source, not question shape:
 
+- **Orbit** → discover and integrate **public third-party APIs**. No auth 
+  required, low token cost. Use when you need an external API for a capability 
+  (weather, payments, messaging, etc.) — search returns matching endpoints, 
+  integrate returns a ready-to-use implementation plan.
 - **`search` / `context`** → **Postman-authored artifacts** someone saved
   in Postman (collections, requests, specs, mocks, workspaces). Matches
   text; doesn't reason. "Does something named/shaped like X exist?"
@@ -20,8 +24,28 @@ Two unconnected datasets, so pick by data source, not question shape:
   dependency edge.
 
 A miss in one says nothing about the other (see Critical Rule 1) — never
-fall back to the Context Graph just because a `search` came back empty, or
-vice versa.
+fall back across sources just because one came back empty.
+
+## Orbit — Public API Discovery
+
+For finding public third-party APIs. Free, no auth, low token cost. Base URL: `https://www.buildwithorbit.ai`.
+
+**Step 1 — Search** (`POST /v1/search`): discover APIs by natural-language query.
+
+```json
+{ "q": "send email via SMTP" }
+```
+
+Returns data[] — each item has id (URN), resourceType (endpoint or mcp), name, method, url, description, and evaluateGuide (use-cases and gotchas). Optional query params: limit (default 10, max 25), cursor (pagination token). Hold onto both id and resourceType — both are required for integrate.
+
+Step 2 — Integrate (POST /v1/integrate): pass a task description and the resources from step 1 to get a taskBrief — a step-by-step plan covering auth requirements, request sequence, parameters, expected responses, and call dependencies. Use resourceType from the search result as the type field.
+
+```json
+{
+  "task": "Send a welcome email when a user signs up",
+  "resources": [{ "id": "urn:orbit:endpoint:v1:...", "type": "endpoint" }]
+}
+```
 
 ## `search`
 

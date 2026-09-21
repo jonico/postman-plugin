@@ -6,11 +6,11 @@ The skill files in this repository are the single source of truth for every
 plugin route below — each tool's manifest points back at the same `skills/`
 directory rather than copying files into itself:
 
-| Route | How it gets the files | Lands at |
-| --- | --- | --- |
-| Claude Code plugin | `/plugin marketplace add postmanlabs/postman-plugin` clones this repo | Claude's plugin dir |
-| Cursor plugin | `.cursor-plugin/plugin.json` points at this repo's `skills/` dir | Cursor's plugin dir |
-| Kimi Code plugin | `.kimi-plugin/plugin.json` points at the same `skills/` dir, and bundles the Postman MCP server | Kimi's plugin dir |
+| Route | How it gets the files | MCP config it reads | Reports itself as |
+| --- | --- | --- | --- |
+| Claude Code plugin | `/plugin marketplace add postmanlabs/postman-plugin` clones this repo | `mcp.claude-code.json` | `postman-claude-code-plugin` |
+| Cursor plugin | `.cursor-plugin/plugin.json` points at this repo's `skills/` dir | `mcp.cursor.json` | `postman-cursor-plugin` |
+| Kimi Code plugin | `.kimi-plugin/plugin.json` points at the same `skills/` dir | `mcpServers` in `.kimi-plugin/plugin.json` | `postman-kimi-plugin` |
 
 The Postman CLI also has its own path for installing these skills, but it's
 still being redesigned — don't treat it as settled or document it here until
@@ -22,7 +22,9 @@ it lands.
 .claude-plugin/marketplace.json   the marketplace Claude Code adds
 .claude-plugin/plugin.json        the Claude Code plugin manifest
 .cursor-plugin/plugin.json        the Cursor plugin manifest
-.kimi-plugin/plugin.json          the Kimi Code plugin manifest
+.kimi-plugin/plugin.json          the Kimi Code plugin manifest — carries its MCP block inline
+mcp.claude-code.json              Claude Code's MCP config
+mcp.cursor.json                   Cursor's MCP config
 skills/<name>/SKILL.md            one skill per directory — see skills/ for the current list
 manifest.json                     generated index of the skill files
 scripts/build-manifest.js         regenerates it
@@ -55,9 +57,23 @@ copy the one for the command you're running:
 | `postman runner start` | Runner analytics | `--no-report-events` |
 | `postman flows run` | Flow run analytics | `--no-report-events` |
 
-Separately, the Kimi manifest and `.mcp.json` configure the hosted Postman MCP
-server at `mcp.postman.com`, so MCP tool calls made through that route reach
-Postman too. The Claude Code and Cursor routes ship skills only.
+Separately, every route configures the hosted Postman MCP server at
+`mcp.postman.com`, so MCP tool calls made through any of them reach Postman too.
+
+## The MCP server config
+
+Each route has its own config file, so each can report itself in `X-Source` and
+traffic can be attributed to the agent it came from:
+
+```
+mcp.claude-code.json        <- .claude-plugin/plugin.json  "mcpServers": "./mcp.claude-code.json"
+mcp.cursor.json             <- .cursor-plugin/plugin.json  "mcpServers": "./mcp.cursor.json"
+.kimi-plugin/plugin.json       inline — Kimi documents no path form
+```
+
+Maintained by hand, and they are not interchangeable copies — `X-Source`, the
+version, and the URL's `mcp` vs `minimal` mode all differ per route on purpose.
+`AGENTS.md` has the reasons and the constraints before you change one.
 
 ## Changing a skill
 
@@ -79,29 +95,24 @@ path, so a release that changes files without changing the version reports
 that users should receive — this repo has shipped empty updates for exactly
 this reason before.
 
-The version lives in three places and they move together:
+Each route versions independently — they ship on their own cadences, so
+differing versions are expected and nothing compares them. Bumping one means the
+three strings that route owns: `version` in its manifest, and `X-Plugin-Version`
+and `User-Agent` in its MCP config (for Kimi, all three are in the manifest).
+`validate.yml` fails if a route's three disagree; it does not compare routes.
 
-```
-.claude-plugin/plugin.json    version
-.cursor-plugin/plugin.json    version
-.kimi-plugin/plugin.json      version, X-Plugin-Version, User-Agent
-```
-
-`.mcp.json` carries the same string in its `X-Plugin-Version` and `User-Agent`
-headers. `marketplace.json` deliberately declares no version — it would
-override `plugin.json` and give the repo a second source of truth.
+`marketplace.json` deliberately declares no version — it would override
+`plugin.json` and give that route a second source of truth.
 
 Semantic versioning: a breaking change to a skill's contract is major, a new
 skill is minor, and a wording or bug fix is patch.
 
-TODO: none of this is enforced. Nothing fails a PR that changes `skills/`
-without bumping the version, and nothing catches the six strings drifting
-apart — `.kimi-plugin/plugin.json` sat at 1.0.0 while three other surfaces
-said 2.0.0. Worth adding to `validate.yml`: a sync check across all six
-spots, a PR gate requiring a semver-greater version when shipped files
-change, and a `scripts/bump-version.js` so the bump is one command instead
-of six edits. `claude plugin validate .` would also catch manifest schema
-errors the current JSON.parse loop cannot.
+TODO: what is enforced is only that a route is internally consistent. Nothing
+fails a PR that changes `skills/` without bumping any version at all, which is
+the case that ships an empty update. Worth adding a PR gate requiring a
+semver-greater version on at least the routes whose shipped files changed.
+`claude plugin validate .` would also catch manifest schema errors the current
+JSON.parse loop cannot.
 
 ## Adding a skill
 

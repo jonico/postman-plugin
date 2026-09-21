@@ -11,5 +11,15 @@
   "homepage": "https://www.postmanlabs.com/skills/",
   "repository": "https://github.com/postmanlabs/postman-plugin",
   "license": "Apache-2.0",
-  "keywords": ["postman", "api", "mocking", "monitoring", "ci", "documentation", "ai-readiness", "flows"]
+  "keywords": [
+    "postman",
+    "api",
+    "mocking",
+    "monitoring",
+    "ci",
+    "documentation",
+    "ai-readiness",
+    "flows"
+  ],
+  "mcpServers": "./mcp.claude-code.json"
 }

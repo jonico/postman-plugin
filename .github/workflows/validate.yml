@@ -22,9 +22,50 @@ jobs:
       - name: Manifest is in sync with the skill files
         run: node scripts/build-manifest.js --check
 
+      # Each marketplace sets its own version deliberately, so nothing here
+      # compares them to each other. What still has to hold is internal: a
+      # marketplace's manifest version and the two version strings in its own MCP
+      # headers describe one release, and nothing at runtime rejects them if they
+      # disagree - the server accepts the request and the traffic is filed under a
+      # version that was never cut. The live DevRel plugin drifted this way once.
+      - name: Each marketplace agrees with its own MCP headers
+        run: |
+          node -e '
+            const fs = require("fs");
+            const routes = [
+              ["claude-code", ".claude-plugin/plugin.json", "mcp.claude-code.json"],
+              ["cursor",      ".cursor-plugin/plugin.json", "mcp.cursor.json"],
+              ["kimi",        ".kimi-plugin/plugin.json",   ".kimi-plugin/plugin.json"]
+            ];
+            const sources = new Set();
+            let bad = 0;
+            for (const [agent, manifest, config] of routes) {
+              const version = JSON.parse(fs.readFileSync(manifest, "utf8")).version,
+                  headers = JSON.parse(fs.readFileSync(config, "utf8")).mcpServers.postman.headers,
+                  want = `postman-${agent}-plugin`;
+              for (const [key, expected] of [
+                ["X-Source", want],
+                ["X-Plugin-Version", version],
+                ["User-Agent", `${want}/${version}`]
+              ]) {
+                if (headers[key] !== expected) {
+                  console.log(`::error file=${config}::${key} is "${headers[key]}", expected "${expected}"`);
+                  bad++;
+                }
+              }
+              if (sources.has(headers["X-Source"])) {
+                console.log(`::error file=${config}::X-Source "${headers["X-Source"]}" is not unique; two clients would share one telemetry bucket`);
+                bad++;
+              }
+              sources.add(headers["X-Source"]);
+              console.log(`${bad ? "    " : "ok  "}${agent.padEnd(12)}${version}`);
+            }
+            process.exit(bad ? 1 : 0);
+          '
+
       - name: Manifests are valid JSON
         run: |
-          for file in .claude-plugin/marketplace.json .claude-plugin/plugin.json .cursor-plugin/plugin.json .kimi-plugin/plugin.json manifest.json; do
+          for file in .claude-plugin/marketplace.json .claude-plugin/plugin.json .cursor-plugin/plugin.json .kimi-plugin/plugin.json mcp.claude-code.json mcp.cursor.json manifest.json; do
             node -e "JSON.parse(require('fs').readFileSync('$file','utf8'))" && echo "ok $file"
           done
 

@@ -45,63 +45,86 @@ npx plugins add postmanlabs/postman-plugin
 
 ## Data sent to Postman
 
-Some Postman CLI commands these skills run report events and results to Postman
-by default. Each has its own opt-out flag — they are not spelled the same, so
-copy the one for the command you're running:
+Postman CLI commands these skills run report to Postman by default. There are
+two separate paths, and only one of them can be turned off.
 
-| Command | Sent by default | Opt out with |
-| --- | --- | --- |
-| `postman application test` | Run results upload to Postman after each run | `--report-events=false` |
-| `postman runner start` | Runner analytics | `--no-report-events` |
-| `postman flows run` | Flow run analytics | `--no-report-events` |
+### Declinable: `--no-report-events`
 
-Separately, the Kimi manifest and `.mcp.json` configure the hosted Postman MCP
-server at `mcp.postman.com`, so MCP tool calls made through that route reach
-Postman too. The Claude Code and Cursor routes ship skills only.
+Seven commands send analytics — and in `application test`'s case the run
+results too — unless you opt out:
+
+| Command | Sent by default |
+| --- | --- |
+| `postman collection run` | Run analytics (see the note below on run history) |
+| `postman application test` | Run results and analytics |
+| `postman spec lint` | Lint analytics (violation counts, pass/fail) |
+| `postman workspace push` | Push analytics |
+| `postman runner start` | Runner analytics |
+| `postman flows run` | Flow run analytics |
+| `postman request` | Request analytics |
+
+**One spelling covers all seven.** `--no-report-events`,
+`--report-events false` and `--report-events=false` are equivalent —
+`bin/postman.js` rewrites the latter two into the first before the arguments
+are parsed, for every command. The positive `--report-events` no longer
+enables anything on these commands; its help text says it is accepted for
+compatibility only.
+
+**`collection run` uploads its run history either way.** The opt-out covers
+analytics only — the upload is gated on a separate internal flag that
+`--no-report-events` does not touch. What the flag does affect is git-native v3
+collections specifically: it selects the execution engine that lets *their*
+results upload, which is why the command's `--report-events` help text reads
+"Upload results for git-native v3 collection runs. Analytics are sent by
+default." Contrast `application test`, whose opt-out does cover both.
+
+The exception is `postman init`, which the `bootstrap` skill runs. There
+`--report-events` is opt-*in* (it gates one richer analytics row and needs a
+login), and `init` declares no negated form — so `--report-events=false` on
+`init` is rewritten to an option it does not have, and the command exits
+non-zero with `unknown option`. Don't copy the opt-out onto `init`.
+
+### Not declinable: client-events
+
+Independently of any flag, the CLI emits a one-line "this command ran" event to
+Postman's unauthenticated client-events collector. It does not depend on
+`--report-events` and does not depend on being logged in, so
+`--no-report-events` does not stop it. `postman collection run`,
+`spec lint`, `workspace push` and `init` emit it in addition to the table
+above, as do the `postman mock` subcommands and `postman performance run`.
+
+The one thing that does suppress it: the collector is only wired for the US
+region, and emission no-ops in other regions (EU included).
+
+### MCP
+
+`.mcp.json` at the repo root configures the hosted Postman MCP server at
+`mcp.postman.com`, so **the Claude Code route reaches Postman over MCP as
+well** — Claude Code reads that file. The Kimi manifest configures the same
+server. Only the Cursor route is skills-only; `.cursor-plugin/plugin.json`
+declares `skills` and no MCP server.
+
+Both MCP configs put `${POSTMAN_MCP_MODE:-...}` in the URL path, and neither
+Claude Code nor the Agent Plugins spec expands a placeholder inside a URL — it
+ships literally, so the intended default mode is not what gets requested. The
+two files also disagree on that default (`.mcp.json` says `mcp`, the Kimi
+manifest says `minimal`). Both are bugs to fix rather than document.
 
 ## Changing a skill
 
 1. Edit the file under `skills/<skill>/`.
 2. Run `node scripts/build-manifest.js`.
-3. Bump the version — see [Releasing](#releasing).
+3. Bump `version` in `.claude-plugin/plugin.json`, `.cursor-plugin/plugin.json`
+   and `.kimi-plugin/plugin.json` (which also carries it in `X-Plugin-Version`
+   and `User-Agent`), and in `.mcp.json`'s matching headers. `claude plugin
+   update` compares only that string against a version-keyed cache, so a
+   release that changes files without bumping it reports "already at the latest
+   version" and delivers nothing.
 4. Commit all of it. CI runs `--check` and fails if you forget step 2.
 
 Step 2 is not optional — `manifest.json` carries a `sha256` per file, and a
 stale manifest silently drifts from what the files actually contain instead
 of failing loudly.
-
-## Releasing
-
-`.claude-plugin/plugin.json` declares a `version`, and that string is the only
-thing `claude plugin update` compares. An install is cached at a version-keyed
-path, so a release that changes files without changing the version reports
-"already at the latest version" and delivers nothing. Bump it on every release
-that users should receive — this repo has shipped empty updates for exactly
-this reason before.
-
-The version lives in three places and they move together:
-
-```
-.claude-plugin/plugin.json    version
-.cursor-plugin/plugin.json    version
-.kimi-plugin/plugin.json      version, X-Plugin-Version, User-Agent
-```
-
-`.mcp.json` carries the same string in its `X-Plugin-Version` and `User-Agent`
-headers. `marketplace.json` deliberately declares no version — it would
-override `plugin.json` and give the repo a second source of truth.
-
-Semantic versioning: a breaking change to a skill's contract is major, a new
-skill is minor, and a wording or bug fix is patch.
-
-TODO: none of this is enforced. Nothing fails a PR that changes `skills/`
-without bumping the version, and nothing catches the six strings drifting
-apart — `.kimi-plugin/plugin.json` sat at 1.0.0 while three other surfaces
-said 2.0.0. Worth adding to `validate.yml`: a sync check across all six
-spots, a PR gate requiring a semver-greater version when shipped files
-change, and a `scripts/bump-version.js` so the bump is one command instead
-of six edits. `claude plugin validate .` would also catch manifest schema
-errors the current JSON.parse loop cannot.
 
 ## Adding a skill
 

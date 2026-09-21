@@ -108,16 +108,6 @@ on `collection run`.
    that says where the mock is — there's nothing left for `-w` to resolve on
    those.
 
-## Anti-patterns
-
-- Running `generate -w` and expecting a local `postman/mocks/NAME/` folder —
-  `-w` writes to the cloud instead of disk, so `mock run ./postman/mocks/NAME`
-  then fails. Generate locally first, then `mock push`, if you want both.
-- Passing the code-mock id to `mock log` instead of the `mockServerId`.
-- Regenerating into a second folder because you assumed there's no in-place
-  update — use `generate --update`.
-- Adding `deploy --public` when the user didn't ask for a public URL.
-
 ## Verification
 
 A mock isn't done because `generate` or `run` exited 0 — hit it with

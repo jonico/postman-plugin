@@ -28,9 +28,9 @@ purely local mock answering a `postman request` on your machine never needs it.
    collection file/directory or an `openapi.yaml` — when the endpoints need to
    mirror an actual API. Either form writes `config.yaml` + `default.js` into
    `postman/mocks/NAME/` (default port 4500).
-   - `--update ./postman/mocks/NAME` regenerates the default handler from the
-     source in place, keeping the existing name, port, and scenarios. Cannot be
-     combined with `--output`.
+   - `SOURCE --update ./postman/mocks/NAME` regenerates the default handler
+     from the source in place, keeping the existing name, port, and scenarios.
+     `--update` still needs the `SOURCE`; it cannot be combined with `--output`.
    - `-w <workspaceId>` saves the mock to a cloud workspace *instead of* the
      repository — it writes no local files and requires being logged in. Cannot
      be combined with `--output`, `--force`, or `--update`.

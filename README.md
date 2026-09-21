@@ -133,11 +133,12 @@ three:
 
 - **`X-Source` must be unique per route.** It is the dimension telemetry keys
   on, so two routes sharing a value collapse into one bucket — which reads
-  exactly like an agent nobody uses. `validate.yml` fails on a duplicate.
+  exactly like an agent nobody uses. Nothing checks this — verify it by eye.
 - **Versions are independent.** Each route ships on its own cadence, so
   differing versions across routes are correct rather than drift. Within a
-  route the manifest `version` and both header strings must agree, which
-  `validate.yml` does enforce.
+  route the manifest `version` and both header strings must agree, and nothing
+  enforces that either — a mismatch is accepted at runtime and the traffic is
+  filed under a version that was never cut.
 - **The URL's mode segment** (`mcp` vs Kimi's `minimal`) selects a different
   tool surface. Unifying it changes which tools Kimi users get — a product
   decision, not a tidy-up.
@@ -153,9 +154,9 @@ identical is wrong once versions are per-route.
    independently — differing versions across routes are correct, not drift —
    so a bump means the three strings that one route owns: `version` in its
    manifest, plus `X-Plugin-Version` and `User-Agent` in its MCP config (for
-   Kimi all three live in the manifest). `validate.yml` fails if a route's
-   three disagree, and deliberately does not compare routes to each other.
-   Don't skip this: `claude plugin update` compares only that string against a
+   Kimi all three live in the manifest). Nothing verifies this, so check the
+   route's three strings against each other before you commit. Don't skip the
+   bump itself either: `claude plugin update` compares only that string against a
    version-keyed cache, so a release that changes files without bumping it
    reports "already at the latest version" and delivers nothing. Semver here is
    major for a breaking change to a skill's contract, minor for a new skill,

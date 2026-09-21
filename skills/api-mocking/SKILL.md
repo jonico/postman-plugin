@@ -119,7 +119,8 @@ on `collection run`.
 A mock isn't done because `generate` or `run` exited 0 — hit it with
 `postman request` and check the actual status/body, or `mock get CLOUD_ID
 --json` for a cloud one, then state whether it ended up local or cloud, and
-(if deployed) private or public. For a scenario/status-code check, confirm the
-header actually changed the response — a typo'd scenario name returns the same
-`Endpoint not defined` as a wrong route, so a passing exit code alone proves
-nothing.
+(if deployed) private or public. For a scenario check, confirm a *valid* name
+from `config.yaml` actually changed the response — a typo'd name falls back to
+the default, so a 200 alone proves nothing. For a status-code check, use an
+endpoint that has an example for that code (not the sample mock). A passing
+exit code from `request` is not enough.

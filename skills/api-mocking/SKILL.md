@@ -41,13 +41,17 @@ purely local mock answering a `postman request` on your machine never needs it.
    line rather than assuming the configured one. Naming `--port N` explicitly
    makes a taken port a hard error; `--port auto` always picks a free one.
 3. **Call it.** Plain `postman request localhost:PORT/route` returns the
-   default scenario's response. Two headers change that per-request, with no
-   restart needed: `x-mock-scenario: <name>` selects a different scenario (the
-   valid names live in `config.yaml`), and `x-mock-response-code: <code>`
-   returns that status instead. A wrong route and a wrong scenario name both
-   come back as `Endpoint not defined` — indistinguishable from the message
-   alone. There's no hot reload: a `default.js` edit does nothing until you
-   Ctrl+C the running server and `mock run` it again.
+   default scenario's response. Two headers can change that per-request, with no
+   restart: `x-mock-scenario: <name>` selects a scenario the mock defines
+   (valid names live in `config.yaml`); a name the mock doesn't define is not an
+   error — it falls back to the default scenario. `x-mock-response-code: <code>`
+   filters an endpoint's saved example responses to the one with that status, so
+   it only changes anything when that endpoint actually has an example for that
+   code — mocks generated from a collection/spec with multiple example statuses
+   honor it; the built-in sample mock has one response per route and ignores it.
+   A wrong route comes back as `Endpoint not defined`. There's no hot reload: a
+   `default.js` edit does nothing until you Ctrl+C the running server and
+   `mock run` it again.
 4. **Push it, if it needs to leave your machine.**
    `postman mock push ./postman/mocks/NAME` is safe to re-run — `Created` the
    first time, `Updated` after — and records the cloud mapping in
@@ -88,11 +92,13 @@ on `collection run`.
 
 ## Critical Rules
 
-1. **Every gated cloud command fails the same way:**
+1. **When you're not signed in, every gated cloud command fails closed:**
    `Authentication required. Run postman login or provide --api-key`, exit 1,
-   nothing half-done. Whether a command is gated is decided by what you pass it,
-   not the verb — `mock get`/`mock run` take either a local path (ungated) or a
-   cloud ID (gated); `mock list` is gated only when called with no path.
+   nothing half-done. (Signed in but lacking access fails differently — a
+   permission or missing-workspace error.) Whether a command is gated is decided
+   by what you pass it, not the verb — `mock get`/`mock run` take either a local
+   path (ungated) or a cloud ID (gated); `mock list` is gated only when called
+   with no path.
 2. **`push` is what moves an existing local mock to the cloud — `-w` at
    `generate` time is optional, not a fork you must choose up front.** A mock
    built as a guest can be pushed and deployed later with no rework.

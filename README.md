@@ -65,12 +65,9 @@ results too — unless you opt out:
 | `postman flows run` | Flow run analytics |
 | `postman request` | Request analytics |
 
-**One spelling covers all seven.** `--no-report-events`,
-`--report-events false` and `--report-events=false` are equivalent —
-`bin/postman.js` rewrites the latter two into the first before the arguments
-are parsed, for every command. The positive `--report-events` no longer
-enables anything on these commands; its help text says it is accepted for
-compatibility only.
+**Use the command-specific opt-out spelling shown above.** `application test`
+uses `--report-events=false`; `runner start` and `flows run` use
+`--no-report-events`. Do not substitute one spelling for another.
 
 **`collection run` uploads its run history either way.** The opt-out covers
 analytics only — the upload is gated on a separate internal flag that

@@ -65,10 +65,15 @@ first to find them.
 | --- | --- | --- |
 | `specificationId` | `$eq`, `$ne`, `$in`, `$nin` | id |
 
+**`documents`**
+| Field | Operators | Value |
+| --- | --- | --- |
+| `documentId` | `$eq`, `$ne`, `$in`, `$nin` | id |
+
 Run `postman search <type> --help` for the exhaustive per-type list — this
-file covers `requests` and `specs`; the others (`collections`,
-`workspaces`, `flows`, `mocks`, `environments`, `documents`) share the
-common fields above plus their own, not yet captured here.
+file covers `requests`, `specs`, and `documents`; the others
+(`collections`, `workspaces`, `flows`, `mocks`, `environments`) share
+the common fields above plus their own, not yet captured here.
 
 ## Examples
 
@@ -79,4 +84,6 @@ postman search requests "upload" --filter "method IN POST,PUT AND workspaceId=ws
 postman search requests "payment" --ownership external --limit 5 --filter "visibility=public"
 postman search specs "billing" --ownership external
 postman search specs "payments" --filter "publisherIsVerified=true AND visibility=public"
+postman search documents "onboarding guide"
+postman search documents "api reference" --filter "workspaceId=ws-abc123"
 ```

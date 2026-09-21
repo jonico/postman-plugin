@@ -106,14 +106,19 @@ too — see [The MCP server config](#the-mcp-server-config). None of the CLI
 flags above apply to that traffic; declining it means not installing the MCP
 server.
 
-One caveat on the mode segment: all three URLs are written as
-`https://mcp.postman.com/${POSTMAN_MCP_MODE:-...}`, and Claude Code does not
-expand a placeholder inside a URL — `claude plugin list --json` reports the
-registered URL with the literal `${POSTMAN_MCP_MODE:-mcp}` still in the path.
-The Agent Plugins spec agrees: only `${PLUGIN_ROOT}`/`${PLUGIN_DATA}` expand,
-and never in a URL. So the per-route mode choice below is deliberate but does
-not currently take effect on the Claude Code route; resolve it at build time
-or behind a stdio wrapper. Unverified for Cursor and Kimi.
+One caveat on the mode segment. `mcp.cursor.json` names its endpoint outright
+(`https://mcp.postman.com/mcp`) because Cursor does not expand `${...}` in an
+MCP URL and `POSTMAN_MCP_MODE` is not a Cursor plugin variable here — a
+placeholder there would request the literal `/${POSTMAN_MCP_MODE:-mcp}` path
+and never reach the server.
+
+The other two routes still carry the placeholder, and it does not expand there
+either: `claude plugin list --json` reports the registered URL with the literal
+`${POSTMAN_MCP_MODE:-mcp}` in the path, and the Agent Plugins spec is explicit
+that only `${PLUGIN_ROOT}`/`${PLUGIN_DATA}` expand and never in a URL. So
+`mcp.claude-code.json` and the Kimi manifest currently request a path that
+isn't the mode they intend. Give them concrete URLs too, or resolve the mode at
+build time.
 
 ## The MCP server config
 
@@ -126,9 +131,23 @@ mcp.cursor.json             <- .cursor-plugin/plugin.json  "mcpServers": "./mcp.
 .kimi-plugin/plugin.json       inline — Kimi documents no path form
 ```
 
-Maintained by hand, and they are not interchangeable copies — `X-Source`, the
-version, and the URL's `mcp` vs `minimal` mode all differ per route on purpose.
-`AGENTS.md` has the reasons and the constraints before you change one.
+Maintained by hand, and they are not interchangeable copies. Three things
+differ per route on purpose, and copying one file over another breaks all
+three:
+
+- **`X-Source` must be unique per route.** It is the dimension telemetry keys
+  on, so two routes sharing a value collapse into one bucket — which reads
+  exactly like an agent nobody uses. `validate.yml` fails on a duplicate.
+- **Versions are independent.** Each route ships on its own cadence, so
+  differing versions across routes are correct rather than drift. Within a
+  route the manifest `version` and both header strings must agree, which
+  `validate.yml` does enforce.
+- **The URL's mode segment** (`mcp` vs Kimi's `minimal`) selects a different
+  tool surface. Unifying it changes which tools Kimi users get — a product
+  decision, not a tidy-up.
+
+There is no generator, deliberately: a tool whose job is to keep these
+identical is wrong once versions are per-route.
 
 ## Changing a skill
 

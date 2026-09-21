@@ -106,19 +106,15 @@ too — see [The MCP server config](#the-mcp-server-config). None of the CLI
 flags above apply to that traffic; declining it means not installing the MCP
 server.
 
-One caveat on the mode segment. `mcp.cursor.json` names its endpoint outright
-(`https://mcp.postman.com/mcp`) because Cursor does not expand `${...}` in an
-MCP URL and `POSTMAN_MCP_MODE` is not a Cursor plugin variable here — a
-placeholder there would request the literal `/${POSTMAN_MCP_MODE:-mcp}` path
-and never reach the server.
-
-The other two routes still carry the placeholder, and it does not expand there
-either: `claude plugin list --json` reports the registered URL with the literal
-`${POSTMAN_MCP_MODE:-mcp}` in the path, and the Agent Plugins spec is explicit
-that only `${PLUGIN_ROOT}`/`${PLUGIN_DATA}` expand and never in a URL. So
-`mcp.claude-code.json` and the Kimi manifest currently request a path that
-isn't the mode they intend. Give them concrete URLs too, or resolve the mode at
-build time.
+All three configs name their endpoint outright — `/mcp` for Claude Code and
+Cursor, `/minimal` for Kimi. Don't reintroduce a `${POSTMAN_MCP_MODE:-...}`
+placeholder to express the default: no route expands `${...}` inside an MCP URL,
+so the whole segment ships literally and the request never reaches the intended
+mode. `claude plugin list --json` reports the registered URL with the
+placeholder still in the path, Cursor has no such plugin variable here, and the
+Agent Plugins spec is explicit that only `${PLUGIN_ROOT}`/`${PLUGIN_DATA}`
+expand and never in a URL. If the mode ever needs to be configurable, resolve it
+at build time or behind a stdio wrapper rather than in the URL string.
 
 ## The MCP server config
 

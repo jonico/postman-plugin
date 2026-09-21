@@ -34,6 +34,38 @@
       ]
     },
     {
+      "name": "api-documentation",
+      "plugin": "postman",
+      "description": "Generate filesystem-first agent friendly api documentation that you can share with your teammates without hassle. Use when the user asks to \"publish API docs,\" \"generate documentation for this API,\" \"put this on the API Network,\" \"share a docs link for this collection or spec,\" or \"why do my docs look empty.\"",
+      "files": [
+        {
+          "target": "SKILL.md",
+          "source": "skills/api-documentation/SKILL.md",
+          "bytes": 2141,
+          "sha256": "79b802121a9b5760bbaa77c391400efcafc5f3365b8f9386b0f8a37c8992be33"
+        },
+        {
+          "target": "reference/rest-api-best-practices.md",
+          "source": "skills/api-documentation/reference/rest-api-best-practices.md",
+          "bytes": 2995,
+          "sha256": "af4f5bb2ec4f7ece778c3f9bf47743b3a3c7959ae19152b6f04b91587122a3c5"
+        }
+      ]
+    },
+    {
+      "name": "api-engineer",
+      "plugin": "postman",
+      "description": "Default entry point for API engineering work — designing, implementing, mocking, testing, monitoring, documenting, or deploying an API.",
+      "files": [
+        {
+          "target": "SKILL.md",
+          "source": "skills/api-engineer/SKILL.md",
+          "bytes": 1678,
+          "sha256": "938186b83138a8451a203eebd994884a2bf8aa4272108bcbd0601e5177f9d966"
+        }
+      ]
+    },
+    {
       "name": "api-mocking",
       "plugin": "postman",
       "description": "Stands up a fake backend that behaves like a real API — from a collection or an OpenAPI spec, running locally or pushed to Postman's cloud for a durable URL — plus request-time scenario and status-code overrides for testing failure paths. Use when the user asks to \"mock this API,\" \"create a mock server,\" \"fake the backend,\" \"run tests without hitting the real API,\" or \"simulate an error/out-of-stock response.\" Covers `postman mock`. Depends on bootstrap for the workspace id only once a mock is pushed to the cloud (`-w`, or the workspace linked in `.postman/resources.yaml`) — generating and running a mock locally needs nothing from bootstrap.",

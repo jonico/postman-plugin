@@ -1,6 +1,6 @@
 ---
 name: api-documentation
-description: Keeps API documentation in sync with the spec or collection it's rendered from — Postman generates it automatically from `description` fields and saved examples, never from hand-written prose — and confirms before making it reachable outside the workspace via the API Network or a public/custom domain. Use when the user asks to "publish API docs," "generate documentation for this API," "put this on the API Network," "share a docs link for this collection or spec," or "why do my docs look empty." Distinct from Documents (freeform collaborative notes) and Spec Hub (the design/authoring surface). Depends on bootstrap for the resolved spec/collection path, and for the workspace id once publishing leaves the local workspace.
+description: Generate filesystem-first agent friendly api documentation that you can share with your teammates without hassle. Use when the user asks to "publish API docs," "generate documentation for this API," "put this on the API Network," "share a docs link for this collection or spec," or "why do my docs look empty." 
 ---
 The bootstrap skill is a precursor to this one — it scaffolds the project with the directories documentation is stored in.
 

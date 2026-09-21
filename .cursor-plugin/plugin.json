@@ -20,5 +20,6 @@
     "flows"
   ],
   "skills": "skills",
+  "version": "2.0.0",
   "mcpServers": "./mcp.cursor.json"
 }

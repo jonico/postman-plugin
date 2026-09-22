@@ -4,19 +4,19 @@
     {
       "name": "api-discovery",
       "plugin": "postman",
-      "description": "Finds what APIs, collections, specs, or requests already exist before building something new, and answers questions about how they relate. Use when the user asks \"does an API for X already exist,\" \"what depends on this service,\" \"what does this API do,\" or before scaffolding anything that might already have a Postman equivalent. Covers Orbit (public APIs), `postman search`, `postman context-graph`, and `postman context instructions discovery`. Reach for Orbit for public third-party APIs; reach for `search` when you're looking for a Postman artifact (keyword or natural-language query); reach for the Context Graph when the question is about relationships, not names.",
+      "description": "Discover and use APIs from the web, or any resource in Postman. Find and integrate public third-party APIs with Orbit, locate Postman entities (collections, workspaces, flows, requests, specs, documents, mocks) with search, and trace relationships between them with the context-graph.",
       "files": [
         {
           "target": "SKILL.md",
           "source": "skills/api-discovery/SKILL.md",
-          "bytes": 11416,
-          "sha256": "752d924a14dca04e985be773544826fff3b5ab1d25f5d500c0216ce52e3f820f"
+          "bytes": 6917,
+          "sha256": "94c542460970d60608c0df7b41ffbfae9cdbf4a3bd6efff453723d1e9e9dff19"
         },
         {
-          "target": "reference/search_filters.md",
-          "source": "skills/api-discovery/reference/search_filters.md",
-          "bytes": 3455,
-          "sha256": "a89c730b8bb9022f68a6cdbe4625786f6cba5717d3348ebc275b04ae48a44ac5"
+          "target": "reference/orbit.md",
+          "source": "skills/api-discovery/reference/orbit.md",
+          "bytes": 3456,
+          "sha256": "ebb7cf021880a28c771f7579e808c9d63951f3cfc83bf12eda31b948b401bf8d"
         }
       ]
     },

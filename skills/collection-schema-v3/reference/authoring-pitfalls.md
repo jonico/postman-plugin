@@ -228,13 +228,14 @@ it from a collection with `postman collection run <dir> --mock <config.yaml>`.
 
 #### The workspace manifest — let the CLI own it
 
-`.postman/resources.yaml` maps local paths to cloud ids. **Do not hand-author it.**
+`.postman/resources.yaml` maps local paths to workspace ids. **Do not hand-author it.**
 `postman init` creates it, and `workspace push` / `mock push` add and update the
-mappings. The only routine hand-edit is deleting a line after a cloud entity is removed,
-since a cloud delete leaves the mapping behind.
+mappings. The only routine hand-edit is deleting a line after a workspace entity is removed,
+since a workspace delete leaves the mapping behind.
 
-When you do need to read or repair it: collections map to a **directory**, every other
-entity maps to a **file**, paths are relative to `.postman/` so they begin `../`, and ids
+When you do need to read or repair it: collections map to a **directory**, the other
+registered entities map to the path the CLI wrote (normally a **file**; datasets are not
+registered), paths are relative to `.postman/` so they begin `../`, and ids
 come either owner-prefixed (`12345678-<uuid>`) or as bare 24-character hex — both work.
 
 ```yaml
@@ -247,9 +248,9 @@ cloudResources:
     ../postman/environments/Dev.environment.yaml: 12345678-6d3e9a17-4c80-4f25-b1a9-7e02c58d3f64
 ```
 
-An entity that exists in the cloud but is missing here makes `workspace push` plan a
-*create*, which then fails `404 The target resource was not found` and leaves the cloud
-copy stale.
+A registered entity that exists in the workspace but is missing here makes `workspace push`
+plan a *create*, which then fails `404 The target resource was not found` and leaves the
+workspace copy stale.
 
 ### Request kinds beyond HTTP
 

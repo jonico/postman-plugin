@@ -462,13 +462,14 @@ An SDK is configured in `.postman/config.json`, not under `postman/`. Generate w
 
 ## The workspace manifest
 
-`.postman/resources.yaml` maps local paths to cloud ids. **Do not hand-author it** —
+`.postman/resources.yaml` maps local paths to workspace ids. **Do not hand-author it** —
 `postman init` creates it and `workspace push` / `mock push` maintain the mappings. The
-one routine hand-edit is deleting a stale line after an entity is deleted in the cloud,
+one routine hand-edit is deleting a stale line after an entity is deleted in the workspace,
 since that leaves the mapping behind.
 
-Collections map to a **directory**; every other entity maps to a **file**. Paths are
-relative to `.postman/`, so they begin `../`. Ids come either owner-prefixed
+Collections map to a **directory**; the other registered entities map to the path the CLI
+wrote, normally a **file**. Datasets are not registered here. Paths are relative to
+`.postman/`, so they begin `../`. Ids come either owner-prefixed
 (`12345678-<uuid>`) or as bare 24-character hex — both are accepted.
 
 ```yaml
@@ -487,9 +488,9 @@ cloudResources:
     ../postman/specs/orders.yaml: cccccccc-dddd-eeee-ffff-000000000000
 ```
 
-An entity that exists in the cloud but is missing from this file makes `workspace push`
-plan a *create*, which fails `404 The target resource was not found` and leaves the
-cloud copy stale. A mapping whose path no longer exists raises `WSP014` from
+A registered entity that exists in the workspace but is missing from this file makes
+`workspace push` plan a *create*, which fails `404 The target resource was not found` and
+leaves the workspace copy stale. A mapping whose path no longer exists raises `WSP014` from
 `workspace lint`.
 
 ## Validating each entity

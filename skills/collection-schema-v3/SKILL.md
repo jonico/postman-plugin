@@ -57,8 +57,8 @@ beyond an HTTP request; the rules that fail most often:
   array; the app writes maps, so prefer them unless a key needs `description`
   or `disabled`.
 - `queryParams` and the URL's query string must agree (`FMT209`).
-- Only collections use `$kind`. Datasets use `type: dataset`, mocks use
-  `version: 1`, and filename suffixes (`.environment.yaml`, `.globals.yaml`) are
+- `$kind` belongs to collection files (definitions, requests, examples, messages).
+  Datasets use `type: dataset`, mocks use `version: 1`, and filename suffixes (`.environment.yaml`, `.globals.yaml`) are
   enforced.
 - Never hand-author `.postman/resources.yaml`; the CLI maintains it.
 

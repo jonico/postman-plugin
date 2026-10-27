@@ -352,8 +352,7 @@ A view's `query` is SQL over the source `name`, not over the file name.
 
 There is no `dataset lint`. `postman dataset get <path>` checks the structure offline.
 `postman dataset query <path> -q "<sql>"` runs SQL against the source, which also proves
-the data parses and the query resolves — note the `-q` flag is required, and this one
-call contacts the server.
+the data parses and the query resolves — note the `-q` flag is required.
 
 ## Mocks
 
@@ -482,8 +481,6 @@ cloudResources:
     ../postman/environments/Dev.environment.yaml: 12345678-6d3e9a17-4c80-4f25-b1a9-7e02c58d3f64
   globals:
     ../postman/globals/Globals.globals.yaml: 12345678-99999999-8888-7777-6666-555555555555
-  datasets:
-    ../postman/datasets/users/users.dataset.yaml: d7c81f43-2e95-4a08-b6d1-9f3e5c07a284
   mocks:
     ../postman/mocks/probe-mock/config.yaml: a41c8e05-7f23-4b96-8d0e-3c6a9b25f718
   specs:

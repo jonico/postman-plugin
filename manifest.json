@@ -182,14 +182,14 @@
         {
           "target": "SKILL.md",
           "source": "skills/collection-schema-v3/SKILL.md",
-          "bytes": 4282,
-          "sha256": "dc93142e421e4bb5a4edb9fdd82f3c3cd52df6b70529ef8e68c2f91f0fa7d107"
+          "bytes": 4333,
+          "sha256": "2844969f5ba461c8eda263c5b3cf7a0842b4fc6f8a6e2fcd35eac6c6efa78a99"
         },
         {
           "target": "reference/authoring-pitfalls.md",
           "source": "skills/collection-schema-v3/reference/authoring-pitfalls.md",
-          "bytes": 16595,
-          "sha256": "7dc6f2cfdbab5ce257df4a32fa793725be30f740faaabae03f493445acb6fd4c"
+          "bytes": 16526,
+          "sha256": "031f27abc3b5d0c2bbf025b93419ec85726323361a9e37d644b82e7b92a6516c"
         },
         {
           "target": "reference/environment.md",
@@ -206,8 +206,8 @@
         {
           "target": "reference/other_entities.md",
           "source": "skills/collection-schema-v3/reference/other_entities.md",
-          "bytes": 17495,
-          "sha256": "f90cab9ad50de12acbca34126961ee06797b456a1035bf7dda28a02e12487581"
+          "bytes": 17357,
+          "sha256": "ad40be0ab0b8cf254f1f7e1813550151dd734d0f04abdefa7f89fe369441607c"
         }
       ]
     },

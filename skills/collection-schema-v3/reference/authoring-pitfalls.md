@@ -102,14 +102,14 @@ queryParams:
 `collection lint` reports this as a warning, not an error, so a green `errorCount` will
 not tell you about it — `postman workspace lint` surfaces it in normal output.
 
-### Only collections use `$kind`
+### `$kind` belongs to collection files
 
 Each other entity lives in its own directory with its own discriminator. Getting this
 wrong is the most common first-attempt error on these files.
 
 | Entity | Path | Discriminator |
 |---|---|---|
-| collection | `postman/collections/<name>/` | `$kind: collection`, `$kind: <x>-request` |
+| collection | `postman/collections/<name>/` | `$kind: collection`, `<x>-request`, `<x>-example`, `<x>-message` |
 | environment | `postman/environments/<n>.environment.yaml` | none — `name` + `values` |
 | globals | `postman/globals/<n>.globals.yaml` | none — `name` + `values` |
 | dataset | `postman/datasets/<n>/<n>.dataset.yaml` | **`type: dataset`** |
@@ -245,8 +245,6 @@ cloudResources:
     ../postman/collections/My API: 12345678-aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
   environments:
     ../postman/environments/Dev.environment.yaml: 12345678-6d3e9a17-4c80-4f25-b1a9-7e02c58d3f64
-  datasets:
-    ../postman/datasets/users/users.dataset.yaml: d7c81f43-2e95-4a08-b6d1-9f3e5c07a284
 ```
 
 An entity that exists in the cloud but is missing here makes `workspace push` plan a

@@ -139,19 +139,19 @@
     {
       "name": "collection-schema-v3",
       "plugin": "postman",
-      "description": "The reference for the git-native v3 collection file format — one YAML file per request/folder/example under postman/collections/, plus postman/environments/. Read before writing, editing, or generating any file in either directory by hand, or before debugging a `collection lint` failure. Covers the HTTP request/example/definition schema, environment schema, and the YAML/naming rules that make files parse — GraphQL, gRPC, WebSocket, Socket.IO, MQTT, MCP, and LLM request schemas are non-HTTP protocols and live in reference/other_protocols.md, read only when a collection actually uses one.",
+      "description": "The reference for the git-native v3 collection file format — one YAML file per request/folder/example under postman/collections/, plus postman/environments/. Read before writing, editing, or generating any file in either directory by hand, or before debugging a `collection lint` failure. Covers the HTTP request/example/definition schema, environment schema, and the YAML/naming rules that make files parse — plus datasets, mocks, globals, specs, documents and the non-HTTP request kinds (GraphQL, gRPC, WebSocket, Socket.IO, MQTT, MCP, LLM), whose complete field lists live in reference/other_entities.md, read only when authoring one of those.",
       "files": [
         {
           "target": "SKILL.md",
           "source": "skills/collection-schema-v3/SKILL.md",
-          "bytes": 8094,
-          "sha256": "5e0f4b4b8a789f187aa3ee1cf1e284b32dfabeedd09b8677b486170e359b7006"
+          "bytes": 24932,
+          "sha256": "589f66dee137f4ca0fc174b85e322db2334e1fd7a9bfce3f64ad03850e7d43e4"
         },
         {
-          "target": "reference/other_protocols.md",
-          "source": "skills/collection-schema-v3/reference/other_protocols.md",
-          "bytes": 3454,
-          "sha256": "c27c63240d8608016c1c54a9200e63ca6bac9d77acc71712c9697189e2f62d6a"
+          "target": "reference/other_entities.md",
+          "source": "skills/collection-schema-v3/reference/other_entities.md",
+          "bytes": 17495,
+          "sha256": "f90cab9ad50de12acbca34126961ee06797b456a1035bf7dda28a02e12487581"
         }
       ]
     },

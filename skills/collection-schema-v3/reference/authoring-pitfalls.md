@@ -93,8 +93,10 @@ So write both, in step:
 ```yaml
 url: '{{base_url}}/search?q=shoes&page=2'
 queryParams:
-  q: shoes
-  page: '2'
+  - key: q
+    value: shoes
+  - key: page
+    value: '2'
 ```
 
 `collection lint` reports this as a warning, not an error, so a green `errorCount` will

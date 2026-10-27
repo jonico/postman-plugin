@@ -1,6 +1,6 @@
 ---
 name: collection-schema-v3
-description: Use when writing or debugging local Postman v3 collection and environment YAML, including collection lint failures. Preserves the per-entity files, inherited context, and schema shapes that make API changes reusable and reviewable in Git. Use for requests such as "fix this request YAML".
+description: Use when writing or debugging local Postman v3 collection, environment, dataset, mock, globals, spec or document files, including collection lint failures. Preserves the per-entity files, inherited context, and schema shapes that make API changes reusable and reviewable in Git. Use for requests such as "fix this request YAML".
 ---
 
 # Collection Schema (v3, Git-Native)

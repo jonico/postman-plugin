@@ -177,19 +177,19 @@
     {
       "name": "collection-schema-v3",
       "plugin": "postman",
-      "description": "Use when writing or debugging local Postman v3 collection and environment YAML, including collection lint failures. Preserves the per-entity files, inherited context, and schema shapes that make API changes reusable and reviewable in Git. Use for requests such as \"fix this request YAML\".",
+      "description": "Use when writing or debugging local Postman v3 collection, environment, dataset, mock, globals, spec or document files, including collection lint failures. Preserves the per-entity files, inherited context, and schema shapes that make API changes reusable and reviewable in Git. Use for requests such as \"fix this request YAML\".",
       "files": [
         {
           "target": "SKILL.md",
           "source": "skills/collection-schema-v3/SKILL.md",
-          "bytes": 4242,
-          "sha256": "b957192b50398436361e1a028c0979bcfc51ab89993ea222695c1d910db71fb3"
+          "bytes": 4282,
+          "sha256": "dc93142e421e4bb5a4edb9fdd82f3c3cd52df6b70529ef8e68c2f91f0fa7d107"
         },
         {
           "target": "reference/authoring-pitfalls.md",
           "source": "skills/collection-schema-v3/reference/authoring-pitfalls.md",
-          "bytes": 16561,
-          "sha256": "91be4f38b3de0c10e7538e27bbf5d0d97073bacf021a32398e430ec69f1704ea"
+          "bytes": 16595,
+          "sha256": "7dc6f2cfdbab5ce257df4a32fa793725be30f740faaabae03f493445acb6fd4c"
         },
         {
           "target": "reference/environment.md",
